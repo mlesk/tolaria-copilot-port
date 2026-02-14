@@ -10,15 +10,23 @@
 
 .editor__placeholder {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
   text-align: center;
-  color: #555;
+  color: #444;
+  gap: 8px;
 }
 
 .editor__placeholder p {
-  margin: 8px 0;
+  margin: 0;
+  font-size: 15px;
+}
+
+.editor__placeholder-hint {
+  font-size: 12px;
+  color: #383858;
 }
 
 /* Tab bar */
@@ -38,19 +46,20 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 7px 14px;
   font-size: 12px;
-  color: #888;
+  color: #777;
   cursor: pointer;
   border-right: 1px solid #2a2a4a;
   white-space: nowrap;
   max-width: 180px;
   flex-shrink: 0;
+  transition: all 0.1s;
 }
 
 .editor__tab:hover {
-  background: #1e1e3a;
-  color: #ccc;
+  background: #1a1a35;
+  color: #bbb;
 }
 
 .editor__tab--active {
@@ -73,6 +82,13 @@
   padding: 0 2px;
   line-height: 1;
   border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.editor__tab:hover .editor__tab-close,
+.editor__tab--active .editor__tab-close {
+  opacity: 1;
 }
 
 .editor__tab-close:hover {

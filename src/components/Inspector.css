@@ -14,7 +14,7 @@
 }
 
 .inspector__header {
-  padding: 12px;
+  padding: 14px 12px;
   border-bottom: 1px solid #2a2a4a;
   display: flex;
   align-items: center;
@@ -23,8 +23,11 @@
 
 .inspector__header h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #999;
 }
 
 .inspector__toggle {

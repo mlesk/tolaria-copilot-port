@@ -122,6 +122,7 @@ export function Editor({ tabs, activeTabPath, onSwitchTab, onCloseTab, onNavigat
       <div className="editor">
         <div className="editor__placeholder">
           <p>Select a note to start editing</p>
+          <span className="editor__placeholder-hint">Cmd+P to search &middot; Cmd+N to create</span>
         </div>
       </div>
     )

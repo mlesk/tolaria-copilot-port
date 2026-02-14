@@ -111,9 +111,9 @@
 }
 
 .note-list__pill--active {
-  background: #4a9eff;
-  color: #ffffff;
-  border-color: #4a9eff;
+  background: #4a9eff22;
+  color: #4a9eff;
+  border-color: #4a9eff44;
 }
 
 .note-list__items {

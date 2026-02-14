@@ -177,18 +177,22 @@
   padding: 5px 16px 5px 28px;
   cursor: pointer;
   font-size: 13px;
-  border-radius: 4px;
-  margin: 1px 4px;
+  border-radius: 6px;
+  margin: 1px 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #bbb;
+  transition: all 0.12s;
 }
 
 .sidebar__topic-item:hover {
-  background: #2a2a4a;
+  background: #252545;
+  color: #ddd;
 }
 
 .sidebar__topic-item--active {
-  background: #2a2a4a;
-  color: #ffffff;
+  background: #4a9eff18;
+  color: #4a9eff;
+  font-weight: 500;
 }
