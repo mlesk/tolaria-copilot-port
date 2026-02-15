@@ -194,7 +194,7 @@ function buildDecorations(view: EditorView): DecorationSet {
     },
   })
 
-  // Second pass: line-based decorations for lists and checkboxes
+  // Second pass: line-based decorations for lists (bullets, checkboxes, ordered)
   for (let i = 1; i <= doc.lines; i++) {
     const line = doc.line(i)
     const text = line.text
@@ -202,39 +202,56 @@ function buildDecorations(view: EditorView): DecorationSet {
     const indent = text.length - stripped.length
     const lineOnCursor = isOnCursorLine(view, line.from, line.to)
 
+    // Skip horizontal rule lines (avoid false match with bullet regex)
+    if (/^([-*_]\s*){3,}$/.test(stripped)) continue
+
+    const level = Math.min(Math.floor(indent / 2), 5)
+
     // Checkbox: "- [ ] " or "- [x] " (with optional leading whitespace)
     const checkboxMatch = text.match(/^(\s*)- \[([ x])\] /)
     if (checkboxMatch && !lineOnCursor) {
       const checked = checkboxMatch[2] === 'x'
-      const markerStart = line.from + checkboxMatch[1].length
-      const markerEnd = markerStart + 6 // "- [x] " is 6 chars
+      const markerPos = line.from + checkboxMatch[1].length
+      const fullMarkerEnd = line.from + checkboxMatch[0].length
+      // Replace entire prefix (whitespace + "- [x] ") with checkbox widget
       decs.push(
         Decoration.replace({
-          widget: new CheckboxWidget(checked, markerStart),
-        }).range(markerStart, markerEnd)
+          widget: new CheckboxWidget(checked, markerPos),
+        }).range(line.from, fullMarkerEnd)
       )
-      // Add nested guide line decoration
-      if (indent > 0) {
-        decs.push(Decoration.line({ class: 'cm-live-list-nested' }).range(line.from))
-      }
+      decs.push(Decoration.line({
+        class: `cm-live-list-item cm-live-list-bullet cm-live-list-level-${level}`,
+      }).range(line.from))
       continue
     }
 
     // Unordered list bullet: "- " (with optional leading whitespace)
     const bulletMatch = text.match(/^(\s*)- /)
     if (bulletMatch && !lineOnCursor) {
-      const markerStart = line.from + bulletMatch[1].length
-      const markerEnd = markerStart + 2 // "- " is 2 chars
+      const fullMarkerEnd = line.from + bulletMatch[0].length
+      // Replace entire prefix (whitespace + "- ") with bullet widget
       decs.push(
         Decoration.replace({
           widget: new BulletWidget(),
-        }).range(markerStart, markerEnd)
+        }).range(line.from, fullMarkerEnd)
       )
+      decs.push(Decoration.line({
+        class: `cm-live-list-item cm-live-list-bullet cm-live-list-level-${level}`,
+      }).range(line.from))
+      continue
     }
 
-    // Add nested guide line for any indented list item (bullet or checkbox)
-    if (indent > 0 && /^\s+(- |\* |\d+\. )/.test(text)) {
-      decs.push(Decoration.line({ class: 'cm-live-list-nested' }).range(line.from))
+    // Ordered list: "1. " (with optional leading whitespace)
+    const orderedMatch = text.match(/^(\s*)(\d+)\. /)
+    if (orderedMatch && !lineOnCursor) {
+      // Hide leading whitespace — CSS controls indentation
+      if (indent > 0) {
+        decs.push(Decoration.replace({}).range(line.from, line.from + indent))
+      }
+      decs.push(Decoration.line({
+        class: `cm-live-list-item cm-live-list-ordered cm-live-list-level-${level}`,
+      }).range(line.from))
+      continue
     }
   }
 
@@ -308,32 +325,32 @@ const livePreviewTheme = EditorView.theme({
     margin: '8px 0',
   },
 
-  // Bullet widget
+  // Bullet widget — fixed width for consistent hanging indent
   '.cm-live-bullet': {
+    display: 'inline-block',
+    width: '20px',
     color: '#888',
-    fontSize: '0.85em',
-    marginRight: '4px',
   },
 
-  // Checkbox widget
+  // Checkbox widget — fixed width matching bullet for consistent indent
   '.cm-live-checkbox-wrap': {
     display: 'inline-flex',
     alignItems: 'center',
-    marginRight: '4px',
+    width: '20px',
     verticalAlign: 'middle',
   },
   '.cm-live-checkbox': {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '16px',
-    height: '16px',
+    width: '15px',
+    height: '15px',
     border: '1.5px solid #555',
     borderRadius: '3px',
     background: 'transparent',
     cursor: 'pointer',
     verticalAlign: 'middle',
-    fontSize: '11px',
+    fontSize: '10px',
     lineHeight: '1',
     color: 'transparent',
     userSelect: 'none',
@@ -347,11 +364,15 @@ const livePreviewTheme = EditorView.theme({
     color: '#fff',
   },
 
-  // Nested list guide line
-  '.cm-live-list-nested': {
-    borderLeft: '1.5px solid #2a2a4a',
-    marginLeft: '8px',
-  },
+  // List indentation — hanging indent so wrapped lines align with text, not marker
+  '.cm-live-list-bullet': { textIndent: '-20px' },
+  '.cm-live-list-ordered': { textIndent: '-20px' },
+  '.cm-live-list-level-0': { paddingLeft: '40px' },
+  '.cm-live-list-level-1': { paddingLeft: '60px' },
+  '.cm-live-list-level-2': { paddingLeft: '80px' },
+  '.cm-live-list-level-3': { paddingLeft: '100px' },
+  '.cm-live-list-level-4': { paddingLeft: '120px' },
+  '.cm-live-list-level-5': { paddingLeft: '140px' },
 })
 
 export function livePreview(): Extension {

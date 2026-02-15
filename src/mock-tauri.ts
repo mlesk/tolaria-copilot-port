@@ -142,14 +142,17 @@ belongs_to:
 - [ ] Review analytics from last issue
 
 ### Nested Topics
-- Content strategy
-  - Newsletter growth
-    - Organic subscribers
-    - Paid acquisition
+- Content strategy for growing the newsletter audience through organic channels, referrals, and high-quality evergreen content that people want to share with their engineering teams
+  - Newsletter growth and subscriber acquisition including all the different channels we use to attract new readers to the publication
+    - Organic subscribers from search, Twitter, and word of mouth — these are the highest quality subscribers with the best retention rates over time
+    - Paid acquisition through Facebook ads and newsletter cross-promotions with other engineering publications in the space
   - Social media cross-posting
 - Technical writing
   - Code examples
   - Architecture diagrams
+1. First ordered item with a really long description that should definitely wrap to the next line when displayed in the editor, testing the hanging indent behavior for numbered lists
+2. Second ordered item — shorter
+  1. Nested ordered item that also has quite a long description to verify that the indentation works correctly for nested numbered lists too
 `,
   '/Users/luca/Laputa/procedure/run-sponsorships.md': `---
 title: Run Sponsorships
