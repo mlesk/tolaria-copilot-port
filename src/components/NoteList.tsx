@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback, memo } from 'react'
+import { Virtuoso } from 'react-virtuoso'
 import type { VaultEntry, SidebarSelection, ModifiedFile } from '../types'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
@@ -17,18 +18,6 @@ interface NoteListProps {
 interface RelationshipGroup {
   label: string
   entries: VaultEntry[]
-}
-
-/** Extract first ~80 chars of content after the title heading */
-function getSnippet(content: string | undefined): string {
-  if (!content) return ''
-  const withoutFm = content.replace(/^---[\s\S]*?---\s*/, '')
-  const withoutH1 = withoutFm.replace(/^#\s+.*\n+/, '')
-  const clean = withoutH1
-    .replace(/[#*_`\[\]]/g, '')
-    .replace(/\n+/g, ' ')
-    .trim()
-  return clean.slice(0, 160) + (clean.length > 160 ? '...' : '')
 }
 
 function relativeDate(ts: number | null): string {
@@ -159,51 +148,64 @@ const TYPE_PILLS = [
 ] as const
 
 
-export function NoteList({ entries, selection, selectedNote, allContent, modifiedFiles, onSelectNote, onCreateNote }: NoteListProps) {
+function NoteListInner({ entries, selection, selectedNote, modifiedFiles, onSelectNote, onCreateNote }: NoteListProps) {
   const [search, setSearch] = useState('')
   const [searchVisible, setSearchVisible] = useState(false)
   const [typeFilter, setTypeFilter] = useState<string | null>(null)
 
   const isEntityView = selection.kind === 'entity'
-  const entityGroups = isEntityView ? buildRelationshipGroups(selection.entry, entries) : []
-  const modifiedStatusMap = new Map<string, string>()
-  if (modifiedFiles) {
-    for (const f of modifiedFiles) {
-      modifiedStatusMap.set(f.path, f.status)
-    }
-  }
 
-  const filtered = isEntityView ? [] : filterEntries(entries, selection, modifiedFiles)
-  const sorted = isEntityView ? [] : [...filtered].sort(sortByModified)
+  const entityGroups = useMemo(
+    () => isEntityView ? buildRelationshipGroups(selection.entry, entries) : [],
+    [isEntityView, selection, entries]
+  )
+
+  const filtered = useMemo(
+    () => isEntityView ? [] : filterEntries(entries, selection, modifiedFiles),
+    [entries, selection, modifiedFiles, isEntityView]
+  )
+
+  const sorted = useMemo(
+    () => isEntityView ? [] : [...filtered].sort(sortByModified),
+    [filtered, isEntityView]
+  )
 
   const query = search.trim().toLowerCase()
 
-  const searchedGroups = query
-    ? entityGroups
-        .map((g) => ({
-          ...g,
-          entries: g.entries.filter((e) => e.title.toLowerCase().includes(query)),
-        }))
-        .filter((g) => g.entries.length > 0)
-    : entityGroups
+  const searched = useMemo(
+    () => query ? sorted.filter((e) => e.title.toLowerCase().includes(query)) : sorted,
+    [sorted, query]
+  )
 
-  const searched = query
-    ? sorted.filter((e) => e.title.toLowerCase().includes(query))
-    : sorted
+  const searchedGroups = useMemo(
+    () => query
+      ? entityGroups
+          .map((g) => ({
+            ...g,
+            entries: g.entries.filter((e) => e.title.toLowerCase().includes(query)),
+          }))
+          .filter((g) => g.entries.length > 0)
+      : entityGroups,
+    [entityGroups, query]
+  )
 
-  const typeCounts = new Map<string | null, number>()
-  typeCounts.set(null, searched.length)
-  for (const entry of searched) {
-    if (entry.isA) {
-      typeCounts.set(entry.isA, (typeCounts.get(entry.isA) ?? 0) + 1)
+  const typeCounts = useMemo(() => {
+    const counts = new Map<string | null, number>()
+    counts.set(null, searched.length)
+    for (const entry of searched) {
+      if (entry.isA) {
+        counts.set(entry.isA, (counts.get(entry.isA) ?? 0) + 1)
+      }
     }
-  }
+    return counts
+  }, [searched])
 
-  const displayed = typeFilter
-    ? searched.filter((e) => e.isA === typeFilter)
-    : searched
+  const displayed = useMemo(
+    () => typeFilter ? searched.filter((e) => e.isA === typeFilter) : searched,
+    [searched, typeFilter]
+  )
 
-  const renderItem = (entry: VaultEntry, isPinned = false) => {
+  const renderItem = useCallback((entry: VaultEntry, isPinned = false) => {
     const isSelected = selectedNote?.path === entry.path && !isPinned
     return (
       <div
@@ -231,14 +233,14 @@ export function NoteList({ entries, selection, selectedNote, allContent, modifie
           </span>
         </div>
         <div className="mt-0.5 text-[12px] leading-[1.5] text-muted-foreground" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {getSnippet(allContent[entry.path])}
+          {entry.snippet}
         </div>
       </div>
     )
-  }
+  }, [selectedNote?.path, onSelectNote])
 
   return (
-    <div className="flex flex-col overflow-y-auto border-r border-border bg-card text-foreground">
+    <div className="flex flex-col overflow-hidden border-r border-border bg-card text-foreground" style={{ height: '100%' }}>
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3.5" data-tauri-drag-region style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>
         <h3 className="m-0 min-w-0 flex-1 truncate text-[14px] font-semibold">
@@ -304,9 +306,9 @@ export function NoteList({ entries, selection, selectedNote, allContent, modifie
       )}
 
       {/* Items */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         {isEntityView ? (
-          <>
+          <div className="h-full overflow-y-auto">
             {renderItem(selection.entry, true)}
             {searchedGroups.length === 0 ? (
               <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">
@@ -325,15 +327,25 @@ export function NoteList({ entries, selection, selectedNote, allContent, modifie
                 </div>
               ))
             )}
-          </>
+          </div>
         ) : (
           displayed.length === 0 ? (
             <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">No notes found</div>
           ) : (
-            displayed.map((entry) => renderItem(entry))
+            <Virtuoso
+              style={{ height: '100%' }}
+              totalCount={displayed.length}
+              initialItemCount={Math.min(displayed.length, 30)}
+              itemContent={(index) => {
+                const entry = displayed[index]
+                return entry ? renderItem(entry) : null
+              }}
+            />
           )
         )}
       </div>
     </div>
   )
 }
+
+export const NoteList = memo(NoteListInner)
