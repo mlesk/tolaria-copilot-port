@@ -62,41 +62,8 @@ export function Sidebar({ entries, selection, onSelect, onSelectNote, modifiedCo
   }
 
   return (
-    <aside className="flex h-full flex-col overflow-hidden bg-sidebar text-sidebar-foreground">
-      {/* macOS Title Bar — 38px with traffic lights */}
-      <div
-        className="flex shrink-0 items-center border-b border-border"
-        style={{ height: 38, padding: '0 12px', WebkitAppRegion: 'drag' } as React.CSSProperties}
-        data-tauri-drag-region
-      >
-        {/* Traffic lights */}
-        <div className="flex items-center gap-3" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-          <div
-            style={{
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              backgroundColor: '#FF5F57',
-            }}
-          />
-          <div
-            style={{
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              backgroundColor: '#FEBC2E',
-            }}
-          />
-          <div
-            style={{
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              backgroundColor: '#28C840',
-            }}
-          />
-        </div>
-      </div>
+    <aside className="flex h-full flex-col overflow-hidden bg-sidebar text-sidebar-foreground" style={{ paddingTop: 38 } as React.CSSProperties}>
+      {/* Native macOS title bar on top */}
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto">
