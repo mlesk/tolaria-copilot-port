@@ -12,7 +12,6 @@ import { ResizeHandle } from './ResizeHandle'
 import { TabBar } from './TabBar'
 import { BreadcrumbBar } from './BreadcrumbBar'
 import { useEditorTheme } from '../hooks/useTheme'
-import { cn } from '@/lib/utils'
 import { splitFrontmatter, preProcessWikilinks, injectWikilinks, countWords } from '../utils/wikilinks'
 import './Editor.css'
 import './EditorTheme.css'
@@ -235,7 +234,7 @@ export const Editor = memo(function Editor({
             applyBlocks(withWikilinks)
           }
           if (result && typeof (result as any).then === 'function') {
-            (result as Promise<any[]>).then(handleBlocks)
+            (result as unknown as Promise<any[]>).then(handleBlocks)
           } else {
             handleBlocks(result as any[])
           }

@@ -17,6 +17,8 @@ const mockEntry: VaultEntry = {
   modifiedAt: 1707900000,
   createdAt: null,
   fileSize: 1024,
+  snippet: '',
+  relationships: {},
 }
 
 const mockContent = `---
@@ -50,6 +52,8 @@ const referrerEntry: VaultEntry = {
   modifiedAt: 1707900000,
   createdAt: null,
   fileSize: 200,
+  snippet: '',
+  relationships: {},
 }
 
 const allContent: Record<string, string> = {

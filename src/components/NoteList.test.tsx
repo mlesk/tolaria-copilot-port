@@ -131,7 +131,7 @@ describe('NoteList', () => {
   })
 
   it('shows entity pinned at top with grouped children', () => {
-    const { container } = render(
+    render(
       <NoteList entries={mockEntries} selection={{ kind: 'entity', entry: mockEntries[0] }} selectedNote={null} onSelectNote={noopSelect} allContent={{}} onCreateNote={vi.fn()} />
     )
     // Entity title appears in header and pinned card

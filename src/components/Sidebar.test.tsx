@@ -18,6 +18,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 1024,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/responsibility/grow-newsletter.md',
@@ -33,6 +35,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 512,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/experiment/stock-screener.md',
@@ -48,6 +52,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 256,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/procedure/weekly-essays.md',
@@ -63,6 +69,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 128,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/topic/software-development.md',
@@ -78,6 +86,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 256,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/topic/trading.md',
@@ -93,6 +103,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 180,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/person/alice.md',
@@ -108,6 +120,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 100,
+    snippet: '',
+    relationships: {},
   },
   {
     path: '/vault/event/kickoff.md',
@@ -123,6 +137,8 @@ const mockEntries: VaultEntry[] = [
     modifiedAt: 1700000000,
     createdAt: null,
     fileSize: 200,
+    snippet: '',
+    relationships: {},
   },
 ]
 
@@ -144,6 +160,7 @@ describe('Sidebar', () => {
     expect(screen.getByText('People')).toBeInTheDocument()
     expect(screen.getByText('Events')).toBeInTheDocument()
     expect(screen.getByText('Topics')).toBeInTheDocument()
+    expect(screen.getByText('Types')).toBeInTheDocument()
   })
 
   it('shows entity names under their section groups', () => {

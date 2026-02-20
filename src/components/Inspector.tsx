@@ -71,7 +71,7 @@ function resolveRefType(ref: string, entries: VaultEntry[]): string | undefined 
     if (fileStem === target.split('/').pop()) return true
     return false
   })
-  return match?.isA
+  return match?.isA ?? undefined
 }
 
 function RelationshipGroup({ label, refs, entries, onNavigate }: { label: string; refs: string[]; entries: VaultEntry[]; onNavigate: (target: string) => void }) {

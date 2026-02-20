@@ -47,6 +47,8 @@ const mockEntry: VaultEntry = {
   modifiedAt: 1700000000,
   createdAt: null,
   fileSize: 1024,
+  snippet: '',
+  relationships: {},
 }
 
 const mockContent = `---

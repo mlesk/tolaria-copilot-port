@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, memo } from 'react'
-import { Virtuoso } from 'react-virtuoso'
+// Virtuoso removed — flat list rendering used instead
 import type { VaultEntry, SidebarSelection, ModifiedFile } from '../types'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
@@ -278,8 +278,8 @@ function NoteListInner({ entries, selection, selectedNote, allContent, modifiedF
 
   const renderItem = useCallback((entry: VaultEntry, isPinned = false) => {
     const isSelected = selectedNote?.path === entry.path && !isPinned
-    const typeColor = getTypeColor(entry.isA)
-    const typeLightColor = getTypeLightColor(entry.isA)
+    const typeColor = getTypeColor(entry.isA ?? '')
+    const typeLightColor = getTypeLightColor(entry.isA ?? '')
     const TypeIcon = getTypeIcon(entry.isA)
     return (
       <div
@@ -325,8 +325,8 @@ function NoteListInner({ entries, selection, selectedNote, allContent, modifiedF
   }, [selectedNote?.path, onSelectNote])
 
   const renderPinnedView = useCallback((entity: VaultEntry, groups: RelationshipGroup[]) => {
-    const entityTypeColor = getTypeColor(entity.isA)
-    const entityLightColor = getTypeLightColor(entity.isA)
+    const entityTypeColor = getTypeColor(entity.isA ?? '')
+    const entityLightColor = getTypeLightColor(entity.isA ?? '')
     const EntityIcon = getTypeIcon(entity.isA)
     return (
       <div className="h-full overflow-y-auto">
@@ -435,29 +435,32 @@ function NoteListInner({ entries, selection, selectedNote, allContent, modifiedF
         })() : (
           <div className="h-full overflow-y-auto">
             {/* Type document pinned card (for sectionGroup view) */}
-            {typeDocument && (
-              <div
-                className="relative cursor-pointer border-b border-[var(--border)]"
-                style={{ backgroundColor: getTypeLightColor(typeDocument.isA), padding: '14px 16px' }}
-                onClick={() => onSelectNote(typeDocument)}
-              >
-                {(() => { const TDIcon = getTypeIcon(typeDocument.isA); return (
+            {typeDocument && (() => {
+              const tdColor = getTypeColor(typeDocument.isA ?? 'Type')
+              const tdLightColor = getTypeLightColor(typeDocument.isA ?? 'Type')
+              const TDIcon = getTypeIcon(typeDocument.isA)
+              return (
+                <div
+                  className="relative cursor-pointer border-b border-[var(--border)]"
+                  style={{ backgroundColor: tdLightColor, padding: '14px 16px' }}
+                  onClick={() => onSelectNote(typeDocument)}
+                >
                   <TDIcon
                     width={16}
                     height={16}
                     className="absolute right-3 top-3.5"
-                    style={{ color: getTypeColor(typeDocument.isA) }}
+                    style={{ color: tdColor }}
                     data-testid="type-icon"
                   />
-                ) })()}
-                <div className="pr-6 text-[14px] font-bold" style={{ color: getTypeColor(typeDocument.isA) }}>
-                  {typeDocument.title}
+                  <div className="pr-6 text-[14px] font-bold" style={{ color: tdColor }}>
+                    {typeDocument.title}
+                  </div>
+                  <div className="mt-1 text-[12px] leading-[1.5] opacity-80" style={{ color: tdColor, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {typeDocument.snippet}
+                  </div>
                 </div>
-                <div className="mt-1 text-[12px] leading-[1.5] opacity-80" style={{ color: getTypeColor(typeDocument.isA), display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                  {typeDocument.snippet}
-                </div>
-              </div>
-            )}
+              )
+            })()}
             {searched.length === 0 ? (
               <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">No notes found</div>
             ) : (
