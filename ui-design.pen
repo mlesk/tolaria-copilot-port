@@ -8476,6 +8476,251 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "csB01",
+      "x": 0,
+      "y": 7140,
+      "name": "Sections Header — Before (old design)",
+      "theme": {
+        "Mode": "Light"
+      },
+      "clip": true,
+      "width": 280,
+      "height": 120,
+      "fill": "$--sidebar",
+      "layout": "vertical",
+      "gap": 8,
+      "padding": [
+        16,
+        12
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "csB02",
+          "name": "frameLabel",
+          "fill": "$--muted-foreground",
+          "content": "BEFORE — Old Design",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "600",
+          "letterSpacing": 1
+        },
+        {
+          "type": "frame",
+          "id": "csB03",
+          "name": "customizeBtn",
+          "width": "fill_container",
+          "cornerRadius": 4,
+          "gap": 6,
+          "padding": [
+            4,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "csB04",
+              "name": "slidersIcon",
+              "width": 14,
+              "height": 14,
+              "iconFontName": "sliders-horizontal",
+              "iconFontFamily": "phosphor",
+              "fill": "$--muted-foreground"
+            },
+            {
+              "type": "text",
+              "id": "csB05",
+              "name": "customizeLabel",
+              "fill": "$--muted-foreground",
+              "content": "Customize sections",
+              "fontFamily": "Inter",
+              "fontSize": 12
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "csB06",
+          "name": "sectionRow",
+          "width": "fill_container",
+          "cornerRadius": 4,
+          "gap": 8,
+          "padding": [
+            6,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "csB07",
+              "name": "left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "csB08",
+                  "name": "projIcon",
+                  "width": 16,
+                  "height": 16,
+                  "iconFontName": "wrench",
+                  "iconFontFamily": "phosphor",
+                  "fill": "$--accent-red"
+                },
+                {
+                  "type": "text",
+                  "id": "csB09",
+                  "name": "projLabel",
+                  "fill": "$--foreground",
+                  "content": "Projects",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "icon_font",
+              "id": "csB10",
+              "name": "chevron",
+              "width": 12,
+              "height": 12,
+              "iconFontName": "caret-right",
+              "iconFontFamily": "phosphor",
+              "fill": "$--foreground"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "csA01",
+      "x": 340,
+      "y": 7140,
+      "name": "Sections Header — After (new design)",
+      "theme": {
+        "Mode": "Light"
+      },
+      "clip": true,
+      "width": 280,
+      "height": 120,
+      "fill": "$--sidebar",
+      "layout": "vertical",
+      "gap": 8,
+      "padding": [
+        16,
+        12
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "csA02",
+          "name": "frameLabel",
+          "fill": "$--muted-foreground",
+          "content": "AFTER — New Design",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "600",
+          "letterSpacing": 1
+        },
+        {
+          "type": "frame",
+          "id": "csA03",
+          "name": "sectionsHeader",
+          "width": "fill_container",
+          "padding": [
+            4,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "csA04",
+              "name": "sectionsLabel",
+              "fill": "$--muted-foreground",
+              "content": "SECTIONS",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600",
+              "letterSpacing": 1.2
+            },
+            {
+              "type": "icon_font",
+              "id": "csA05",
+              "name": "settingsIcon",
+              "width": 14,
+              "height": 14,
+              "iconFontName": "sliders-horizontal",
+              "iconFontFamily": "phosphor",
+              "fill": "$--muted-foreground"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "csA06",
+          "name": "sectionRow",
+          "width": "fill_container",
+          "cornerRadius": 4,
+          "gap": 8,
+          "padding": [
+            6,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "csA07",
+              "name": "left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "csA08",
+                  "name": "projIcon",
+                  "width": 16,
+                  "height": 16,
+                  "iconFontName": "wrench",
+                  "iconFontFamily": "phosphor",
+                  "fill": "$--accent-red"
+                },
+                {
+                  "type": "text",
+                  "id": "csA09",
+                  "name": "projLabel",
+                  "fill": "$--foreground",
+                  "content": "Projects",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "icon_font",
+              "id": "csA10",
+              "name": "chevron",
+              "width": 12,
+              "height": 12,
+              "iconFontName": "caret-right",
+              "iconFontFamily": "phosphor",
+              "fill": "$--foreground"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
