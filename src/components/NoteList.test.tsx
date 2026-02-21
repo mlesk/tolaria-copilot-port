@@ -276,6 +276,8 @@ describe('getSortComparator', () => {
     owner: null,
     cadence: null,
     archived: false,
+    trashed: false,
+    trashedAt: null,
     modifiedAt: null,
     createdAt: null,
     fileSize: 100,
@@ -352,6 +354,8 @@ describe('NoteList sort controls', () => {
     owner: null,
     cadence: null,
     archived: false,
+    trashed: false,
+    trashedAt: null,
     modifiedAt: null,
     createdAt: null,
     fileSize: 100,
@@ -486,6 +490,7 @@ const trashedEntry: VaultEntry = {
   relationships: {},
   icon: null,
   color: null,
+  order: null,
 }
 
 const expiredTrashedEntry: VaultEntry = {
@@ -509,6 +514,7 @@ const expiredTrashedEntry: VaultEntry = {
   relationships: {},
   icon: null,
   color: null,
+  order: null,
 }
 
 const entriesWithTrashed = [...mockEntries, trashedEntry, expiredTrashedEntry]

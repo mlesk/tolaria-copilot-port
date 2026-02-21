@@ -1438,6 +1438,7 @@ const MOCK_ENTRIES: VaultEntry[] = [
     },
     icon: null,
     color: null,
+    order: null,
   },
   {
     path: '/Users/luca/Laputa/note/deprecated-api-notes.md',
@@ -1462,6 +1463,7 @@ const MOCK_ENTRIES: VaultEntry[] = [
     },
     icon: null,
     color: null,
+    order: null,
   },
   {
     path: '/Users/luca/Laputa/experiment/failed-seo-experiment.md',
@@ -1487,6 +1489,7 @@ const MOCK_ENTRIES: VaultEntry[] = [
     },
     icon: null,
     color: null,
+    order: null,
   },
   // --- Archived entries ---
   {

@@ -571,19 +571,19 @@ describe('Sidebar', () => {
       {
         path: '/vault/type/project.md', filename: 'project.md', title: 'Project', isA: 'Type',
         aliases: [], belongsTo: [], relatedTo: [], status: null, owner: null, cadence: null,
-        archived: false, modifiedAt: 1700000000, createdAt: null, fileSize: 200, snippet: '',
+        archived: false, trashed: false, trashedAt: null, modifiedAt: 1700000000, createdAt: null, fileSize: 200, snippet: '',
         relationships: {}, icon: null, color: null, order: 5,
       },
       {
         path: '/vault/type/topic.md', filename: 'topic.md', title: 'Topic', isA: 'Type',
         aliases: [], belongsTo: [], relatedTo: [], status: null, owner: null, cadence: null,
-        archived: false, modifiedAt: 1700000000, createdAt: null, fileSize: 200, snippet: '',
+        archived: false, trashed: false, trashedAt: null, modifiedAt: 1700000000, createdAt: null, fileSize: 200, snippet: '',
         relationships: {}, icon: null, color: null, order: 0,
       },
       {
         path: '/vault/type/person.md', filename: 'person.md', title: 'Person', isA: 'Type',
         aliases: [], belongsTo: [], relatedTo: [], status: null, owner: null, cadence: null,
-        archived: false, modifiedAt: 1700000000, createdAt: null, fileSize: 200, snippet: '',
+        archived: false, trashed: false, trashedAt: null, modifiedAt: 1700000000, createdAt: null, fileSize: 200, snippet: '',
         relationships: {}, icon: null, color: null, order: 1,
       },
     ]

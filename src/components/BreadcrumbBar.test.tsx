@@ -24,6 +24,7 @@ const baseEntry: VaultEntry = {
   relationships: {},
   icon: null,
   color: null,
+  order: null,
 }
 
 const trashedEntry: VaultEntry = {
