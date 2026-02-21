@@ -4733,276 +4733,160 @@
     },
     {
       "type": "frame",
-      "id": "sortCtrl1",
-      "name": "Sort Notes — Subsection Sort Control",
+      "id": "sortF1",
+      "name": "Sort Notes — picker closed",
       "theme": {
         "Mode": "Light"
       },
       "x": 0,
       "y": 1000,
-      "width": 800,
-      "height": 500,
+      "width": 400,
+      "height": 320,
       "fill": "$--background",
       "layout": "vertical",
-      "gap": 32,
+      "gap": 8,
       "padding": [
-        32,
-        32,
-        32,
-        32
+        16,
+        16,
+        16,
+        16
       ],
       "clip": true,
       "children": [
         {
           "type": "text",
-          "id": "sortTitle1",
+          "id": "sf1Title",
           "name": "frame-title",
-          "content": "Sort Notes — Relationship Subsection Sort Control",
+          "content": "Sort Notes — picker closed",
           "fontFamily": "Inter",
-          "fontSize": 18,
+          "fontSize": 14,
           "fontWeight": "700",
           "fill": "$--foreground",
           "width": "fill_container"
         },
         {
           "type": "text",
-          "id": "sortDesc1",
+          "id": "sf1Desc",
           "name": "description",
-          "content": "Each relationship subsection header gets a small sort dropdown. Default sort is by Modified date (descending). User can choose: Modified, Created, Title (A-Z), Status.",
+          "content": "Default state: each relationship subsection header shows a sort button with the current sort option label. Clicking opens a dropdown.",
           "fontFamily": "Inter",
-          "fontSize": 13,
+          "fontSize": 11,
           "fontWeight": "normal",
           "fill": "$--muted-foreground",
           "width": "fill_container",
-          "lineHeight": 1.6
+          "lineHeight": 1.5
+        },
+        {
+          "type": "text",
+          "id": "stateLabel1",
+          "name": "state-label",
+          "content": "Default State — Sort icon in subsection header",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "600",
+          "fill": "$--muted-foreground",
+          "width": "fill_container"
         },
         {
           "type": "frame",
-          "id": "sortState1",
-          "name": "state-default",
+          "id": "sortHeader1",
+          "name": "subsection-header",
           "width": "fill_container",
-          "layout": "vertical",
-          "gap": 0,
+          "height": 32,
+          "fill": "$--muted",
+          "layout": "horizontal",
+          "padding": [
+            0,
+            16,
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
           "children": [
             {
-              "type": "text",
-              "id": "stateLabel1",
-              "name": "state-label",
-              "content": "Default State — Sort icon in subsection header",
-              "fontFamily": "Inter",
-              "fontSize": 11,
-              "fontWeight": "600",
-              "fill": "$--muted-foreground",
-              "width": "fill_container"
+              "type": "frame",
+              "id": "sortHL",
+              "name": "header-left",
+              "layout": "horizontal",
+              "gap": 6,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sortLbl",
+                  "name": "group-label",
+                  "content": "CHILDREN",
+                  "fontFamily": "IBM Plex Mono",
+                  "fontSize": 11,
+                  "fontWeight": "500",
+                  "fill": "$--muted-foreground"
+                },
+                {
+                  "type": "text",
+                  "id": "sortCnt",
+                  "name": "group-count",
+                  "content": "5",
+                  "fontFamily": "IBM Plex Mono",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "$--muted-foreground"
+                }
+              ]
             },
             {
               "type": "frame",
-              "id": "sortHeader1",
-              "name": "subsection-header",
-              "width": "fill_container",
-              "height": 32,
-              "fill": "$--muted",
+              "id": "sortHR",
+              "name": "header-right",
               "layout": "horizontal",
-              "padding": [
-                0,
-                16,
-                0,
-                16
-              ],
-              "justifyContent": "space_between",
+              "gap": 8,
               "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "sortHL",
-                  "name": "header-left",
+                  "id": "sortBtn",
+                  "name": "sort-button",
                   "layout": "horizontal",
-                  "gap": 6,
+                  "gap": 3,
                   "alignItems": "center",
+                  "cornerRadius": 4,
+                  "padding": [
+                    2,
+                    4,
+                    2,
+                    4
+                  ],
                   "children": [
-                    {
-                      "type": "text",
-                      "id": "sortLbl",
-                      "name": "group-label",
-                      "content": "CHILDREN",
-                      "fontFamily": "IBM Plex Mono",
-                      "fontSize": 11,
-                      "fontWeight": "500",
-                      "fill": "$--muted-foreground"
-                    },
-                    {
-                      "type": "text",
-                      "id": "sortCnt",
-                      "name": "group-count",
-                      "content": "5",
-                      "fontFamily": "IBM Plex Mono",
-                      "fontSize": 11,
-                      "fontWeight": "400",
-                      "fill": "$--muted-foreground"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "sortHR",
-                  "name": "header-right",
-                  "layout": "horizontal",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "sortBtn",
-                      "name": "sort-button",
-                      "layout": "horizontal",
-                      "gap": 3,
-                      "alignItems": "center",
-                      "cornerRadius": 4,
-                      "padding": [
-                        2,
-                        4,
-                        2,
-                        4
-                      ],
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "sortIcn",
-                          "name": "sort-icon",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "arrows-down-up",
-                          "iconFontFamily": "phosphor",
-                          "fill": "$--muted-foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "sortLblCur",
-                          "name": "sort-current",
-                          "content": "Modified",
-                          "fontFamily": "Inter",
-                          "fontSize": 10,
-                          "fontWeight": "500",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
-                    },
                     {
                       "type": "icon_font",
-                      "id": "sortChev",
-                      "name": "chevron",
+                      "id": "sortIcn",
+                      "name": "sort-icon",
                       "width": 12,
                       "height": 12,
-                      "iconFontName": "chevron-down",
-                      "iconFontFamily": "lucide",
+                      "iconFontName": "arrows-down-up",
+                      "iconFontFamily": "phosphor",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "sortLblCur",
+                      "name": "sort-current",
+                      "content": "Modified",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "500",
                       "fill": "$--muted-foreground"
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "sortNI1",
-              "name": "note-item-1",
-              "width": "fill_container",
-              "stroke": {
-                "align": "inside",
-                "thickness": {
-                  "bottom": 1
-                },
-                "fill": "$--border"
-              },
-              "layout": "vertical",
-              "gap": 4,
-              "padding": [
-                14,
-                16,
-                14,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "ni1t",
-                  "name": "title",
-                  "content": "Launch Campaign",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500",
-                  "fill": "$--foreground"
                 },
                 {
-                  "type": "text",
-                  "id": "ni1s",
-                  "name": "snippet",
-                  "content": "Plan the Q1 marketing campaign for...",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal",
-                  "fill": "$--muted-foreground"
-                },
-                {
-                  "type": "text",
-                  "id": "ni1d",
-                  "name": "date",
-                  "content": "2h ago",
-                  "fontFamily": "Inter",
-                  "fontSize": 10,
-                  "fontWeight": "normal",
-                  "fill": "$--muted-foreground"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "sortNI2",
-              "name": "note-item-2",
-              "width": "fill_container",
-              "stroke": {
-                "align": "inside",
-                "thickness": {
-                  "bottom": 1
-                },
-                "fill": "$--border"
-              },
-              "layout": "vertical",
-              "gap": 4,
-              "padding": [
-                14,
-                16,
-                14,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "ni2t",
-                  "name": "title",
-                  "content": "Budget Review",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "500",
-                  "fill": "$--foreground"
-                },
-                {
-                  "type": "text",
-                  "id": "ni2s",
-                  "name": "snippet",
-                  "content": "Review quarterly budget allocations...",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal",
-                  "fill": "$--muted-foreground"
-                },
-                {
-                  "type": "text",
-                  "id": "ni2d",
-                  "name": "date",
-                  "content": "1d ago",
-                  "fontFamily": "Inter",
-                  "fontSize": 10,
-                  "fontWeight": "normal",
+                  "type": "icon_font",
+                  "id": "sortChev",
+                  "name": "chevron",
+                  "width": 12,
+                  "height": 12,
+                  "iconFontName": "chevron-down",
+                  "iconFontFamily": "lucide",
                   "fill": "$--muted-foreground"
                 }
               ]
@@ -5011,298 +4895,441 @@
         },
         {
           "type": "frame",
-          "id": "sortState2",
-          "name": "state-dropdown-open",
+          "id": "sortNI1",
+          "name": "note-item-1",
           "width": "fill_container",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "$--border"
+          },
           "layout": "vertical",
-          "gap": 0,
+          "gap": 4,
+          "padding": [
+            14,
+            16,
+            14,
+            16
+          ],
           "children": [
             {
               "type": "text",
-              "id": "stateLabel2",
-              "name": "state-label",
-              "content": "Open State — Sort dropdown menu",
+              "id": "ni1t",
+              "name": "title",
+              "content": "Launch Campaign",
               "fontFamily": "Inter",
-              "fontSize": 11,
-              "fontWeight": "600",
-              "fill": "$--muted-foreground",
-              "width": "fill_container"
+              "fontSize": 13,
+              "fontWeight": "500",
+              "fill": "$--foreground"
             },
             {
+              "type": "text",
+              "id": "ni1s",
+              "name": "snippet",
+              "content": "Plan the Q1 marketing campaign for...",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "fill": "$--muted-foreground"
+            },
+            {
+              "type": "text",
+              "id": "ni1d",
+              "name": "date",
+              "content": "2h ago",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "fill": "$--muted-foreground"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sortNI2",
+          "name": "note-item-2",
+          "width": "fill_container",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "$--border"
+          },
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            14,
+            16,
+            14,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "ni2t",
+              "name": "title",
+              "content": "Budget Review",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "fill": "$--foreground"
+            },
+            {
+              "type": "text",
+              "id": "ni2s",
+              "name": "snippet",
+              "content": "Review quarterly budget allocations...",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "fill": "$--muted-foreground"
+            },
+            {
+              "type": "text",
+              "id": "ni2d",
+              "name": "date",
+              "content": "1d ago",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "fill": "$--muted-foreground"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "sortF2",
+      "name": "Sort Notes — picker open",
+      "theme": {
+        "Mode": "Light"
+      },
+      "x": 420,
+      "y": 1000,
+      "width": 400,
+      "height": 400,
+      "fill": "$--background",
+      "layout": "vertical",
+      "gap": 8,
+      "padding": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "clip": true,
+      "children": [
+        {
+          "type": "text",
+          "id": "sf2Title",
+          "name": "frame-title",
+          "content": "Sort Notes — picker open",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "700",
+          "fill": "$--foreground",
+          "width": "fill_container"
+        },
+        {
+          "type": "text",
+          "id": "sf2Desc",
+          "name": "description",
+          "content": "Open state: dropdown popover with sort options (Modified, Created, Title, Status). Active option has a check mark. Selecting an option sorts that subsection and persists the choice.",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "fill": "$--muted-foreground",
+          "width": "fill_container",
+          "lineHeight": 1.5
+        },
+        {
+          "type": "text",
+          "id": "stateLabel2",
+          "name": "state-label",
+          "content": "Open State — Sort dropdown menu",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "600",
+          "fill": "$--muted-foreground",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "sortHeader2",
+          "name": "subsection-header-active",
+          "width": "fill_container",
+          "height": 32,
+          "fill": "$--muted",
+          "layout": "horizontal",
+          "padding": [
+            0,
+            16,
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
               "type": "frame",
-              "id": "sortHeader2",
-              "name": "subsection-header-active",
-              "width": "fill_container",
-              "height": 32,
-              "fill": "$--muted",
+              "id": "sortHL2",
+              "name": "header-left",
               "layout": "horizontal",
-              "padding": [
-                0,
-                16,
-                0,
-                16
-              ],
-              "justifyContent": "space_between",
+              "gap": 6,
               "alignItems": "center",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "sortHL2",
-                  "name": "header-left",
-                  "layout": "horizontal",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "sortLbl2",
-                      "name": "group-label",
-                      "content": "CHILDREN",
-                      "fontFamily": "IBM Plex Mono",
-                      "fontSize": 11,
-                      "fontWeight": "500",
-                      "fill": "$--muted-foreground"
-                    },
-                    {
-                      "type": "text",
-                      "id": "sortCnt2",
-                      "name": "group-count",
-                      "content": "5",
-                      "fontFamily": "IBM Plex Mono",
-                      "fontSize": 11,
-                      "fontWeight": "400",
-                      "fill": "$--muted-foreground"
-                    }
-                  ]
+                  "type": "text",
+                  "id": "sortLbl2",
+                  "name": "group-label",
+                  "content": "CHILDREN",
+                  "fontFamily": "IBM Plex Mono",
+                  "fontSize": 11,
+                  "fontWeight": "500",
+                  "fill": "$--muted-foreground"
                 },
                 {
-                  "type": "frame",
-                  "id": "sortHR2",
-                  "name": "header-right",
-                  "layout": "horizontal",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "sortBtn2",
-                      "name": "sort-button-active",
-                      "layout": "horizontal",
-                      "gap": 3,
-                      "alignItems": "center",
-                      "cornerRadius": 4,
-                      "padding": [
-                        2,
-                        4,
-                        2,
-                        4
-                      ],
-                      "fill": "$--accent",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "sortIcn2",
-                          "name": "sort-icon",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "arrows-down-up",
-                          "iconFontFamily": "phosphor",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "sortLblCur2",
-                          "name": "sort-current",
-                          "content": "Modified",
-                          "fontFamily": "Inter",
-                          "fontSize": 10,
-                          "fontWeight": "500",
-                          "fill": "$--foreground"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "icon_font",
-                      "id": "sortChev2",
-                      "name": "chevron",
-                      "width": 12,
-                      "height": 12,
-                      "iconFontName": "chevron-down",
-                      "iconFontFamily": "lucide",
-                      "fill": "$--muted-foreground"
-                    }
-                  ]
+                  "type": "text",
+                  "id": "sortCnt2",
+                  "name": "group-count",
+                  "content": "5",
+                  "fontFamily": "IBM Plex Mono",
+                  "fontSize": 11,
+                  "fontWeight": "400",
+                  "fill": "$--muted-foreground"
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "sortDropdown",
-              "name": "sort-dropdown-popover",
-              "width": 140,
-              "fill": "$--popover",
-              "cornerRadius": 6,
-              "stroke": {
-                "align": "inside",
-                "thickness": 1,
-                "fill": "$--border"
-              },
-              "layout": "vertical",
-              "gap": 0,
-              "padding": [
-                4,
-                4,
-                4,
-                4
-              ],
+              "id": "sortHR2",
+              "name": "header-right",
+              "layout": "horizontal",
+              "gap": 8,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "sortOpt1",
-                  "name": "option-modified",
-                  "width": "fill_container",
-                  "height": 28,
-                  "cornerRadius": 4,
-                  "fill": "$--accent",
+                  "id": "sortBtn2",
+                  "name": "sort-button-active",
                   "layout": "horizontal",
-                  "gap": 6,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    8
-                  ],
+                  "gap": 3,
                   "alignItems": "center",
+                  "cornerRadius": 4,
+                  "padding": [
+                    2,
+                    4,
+                    2,
+                    4
+                  ],
+                  "fill": "$--accent",
                   "children": [
                     {
                       "type": "icon_font",
-                      "id": "optIcn1",
-                      "name": "check-icon",
+                      "id": "sortIcn2",
+                      "name": "sort-icon",
                       "width": 12,
                       "height": 12,
-                      "iconFontName": "check",
-                      "iconFontFamily": "lucide",
+                      "iconFontName": "arrows-down-up",
+                      "iconFontFamily": "phosphor",
                       "fill": "$--foreground"
                     },
                     {
                       "type": "text",
-                      "id": "optLbl1",
-                      "name": "option-label",
+                      "id": "sortLblCur2",
+                      "name": "sort-current",
                       "content": "Modified",
                       "fontFamily": "Inter",
-                      "fontSize": 12,
+                      "fontSize": 10,
                       "fontWeight": "500",
                       "fill": "$--foreground"
                     }
                   ]
                 },
                 {
-                  "type": "frame",
-                  "id": "sortOpt2",
-                  "name": "option-created",
-                  "width": "fill_container",
-                  "height": 28,
-                  "cornerRadius": 4,
-                  "layout": "horizontal",
-                  "gap": 6,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    8
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "optSpc2",
-                      "name": "spacer",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "text",
-                      "id": "optLbl2",
-                      "name": "option-label",
-                      "content": "Created",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal",
-                      "fill": "$--popover-foreground"
-                    }
-                  ]
+                  "type": "icon_font",
+                  "id": "sortChev2",
+                  "name": "chevron",
+                  "width": 12,
+                  "height": 12,
+                  "iconFontName": "chevron-down",
+                  "iconFontFamily": "lucide",
+                  "fill": "$--muted-foreground"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sortDropdown",
+          "name": "sort-dropdown-popover",
+          "width": 140,
+          "fill": "$--popover",
+          "cornerRadius": 6,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$--border"
+          },
+          "layout": "vertical",
+          "gap": 0,
+          "padding": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "sortOpt1",
+              "name": "option-modified",
+              "width": "fill_container",
+              "height": 28,
+              "cornerRadius": 4,
+              "fill": "$--accent",
+              "layout": "horizontal",
+              "gap": 6,
+              "padding": [
+                0,
+                8,
+                0,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "optIcn1",
+                  "name": "check-icon",
+                  "width": 12,
+                  "height": 12,
+                  "iconFontName": "check",
+                  "iconFontFamily": "lucide",
+                  "fill": "$--foreground"
                 },
                 {
-                  "type": "frame",
-                  "id": "sortOpt3",
-                  "name": "option-title",
-                  "width": "fill_container",
-                  "height": 28,
-                  "cornerRadius": 4,
-                  "layout": "horizontal",
-                  "gap": 6,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    8
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "optSpc3",
-                      "name": "spacer",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "text",
-                      "id": "optLbl3",
-                      "name": "option-label",
-                      "content": "Title",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal",
-                      "fill": "$--popover-foreground"
-                    }
-                  ]
-                },
+                  "type": "text",
+                  "id": "optLbl1",
+                  "name": "option-label",
+                  "content": "Modified",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "500",
+                  "fill": "$--foreground"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sortOpt2",
+              "name": "option-created",
+              "width": "fill_container",
+              "height": 28,
+              "cornerRadius": 4,
+              "layout": "horizontal",
+              "gap": 6,
+              "padding": [
+                0,
+                8,
+                0,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
                 {
                   "type": "frame",
-                  "id": "sortOpt4",
-                  "name": "option-status",
-                  "width": "fill_container",
-                  "height": 28,
-                  "cornerRadius": 4,
-                  "layout": "horizontal",
-                  "gap": 6,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    8
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "optSpc4",
-                      "name": "spacer",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "text",
-                      "id": "optLbl4",
-                      "name": "option-label",
-                      "content": "Status",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal",
-                      "fill": "$--popover-foreground"
-                    }
-                  ]
+                  "id": "optSpc2",
+                  "name": "spacer",
+                  "width": 12,
+                  "height": 12
+                },
+                {
+                  "type": "text",
+                  "id": "optLbl2",
+                  "name": "option-label",
+                  "content": "Created",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "fill": "$--popover-foreground"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sortOpt3",
+              "name": "option-title",
+              "width": "fill_container",
+              "height": 28,
+              "cornerRadius": 4,
+              "layout": "horizontal",
+              "gap": 6,
+              "padding": [
+                0,
+                8,
+                0,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "optSpc3",
+                  "name": "spacer",
+                  "width": 12,
+                  "height": 12
+                },
+                {
+                  "type": "text",
+                  "id": "optLbl3",
+                  "name": "option-label",
+                  "content": "Title",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "fill": "$--popover-foreground"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sortOpt4",
+              "name": "option-status",
+              "width": "fill_container",
+              "height": 28,
+              "cornerRadius": 4,
+              "layout": "horizontal",
+              "gap": 6,
+              "padding": [
+                0,
+                8,
+                0,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "optSpc4",
+                  "name": "spacer",
+                  "width": 12,
+                  "height": 12
+                },
+                {
+                  "type": "text",
+                  "id": "optLbl4",
+                  "name": "option-label",
+                  "content": "Status",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "fill": "$--popover-foreground"
                 }
               ]
             }
