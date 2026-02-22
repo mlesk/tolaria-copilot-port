@@ -356,7 +356,7 @@ export const Editor = memo(function Editor({
 
   const activeTab = tabs.find((t) => t.entry.path === activeTabPath) ?? null
   const isLoadingNewTab = activeTabPath !== null && !activeTab
-  const showDiffToggle = activeTab && isModified?.(activeTab.entry.path)
+  const showDiffToggle = activeTab && (diffMode || isModified?.(activeTab.entry.path))
 
   useEffect(() => {
     setDiffMode(false)
@@ -486,6 +486,14 @@ export const Editor = memo(function Editor({
           {breadcrumbBar}
           {diffMode && (
             <div className="flex-1 overflow-auto">
+              <button
+                className="flex items-center gap-1.5 px-4 py-2 text-xs text-primary bg-muted border-b border-border cursor-pointer hover:bg-accent transition-colors w-full border-t-0 border-l-0 border-r-0"
+                onClick={handleToggleDiff}
+                title="Back to editor"
+              >
+                <span style={{ fontSize: 14, lineHeight: 1 }}>&larr;</span>
+                Back to editor
+              </button>
               <DiffView diff={diffContent ?? ''} />
             </div>
           )}
