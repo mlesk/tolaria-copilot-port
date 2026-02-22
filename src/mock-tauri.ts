@@ -1438,6 +1438,7 @@ const MOCK_ENTRIES: VaultEntry[] = [
     },
     icon: null,
     color: null,
+    order: null,
   },
   {
     path: '/Users/luca/Laputa/note/deprecated-api-notes.md',
@@ -1462,6 +1463,7 @@ const MOCK_ENTRIES: VaultEntry[] = [
     },
     icon: null,
     color: null,
+    order: null,
   },
   {
     path: '/Users/luca/Laputa/experiment/failed-seo-experiment.md',
@@ -1487,6 +1489,7 @@ const MOCK_ENTRIES: VaultEntry[] = [
     },
     icon: null,
     color: null,
+    order: null,
   },
   // --- Archived entries ---
   {
@@ -1619,6 +1622,23 @@ index abc1234..def5678 100644
 +A new paragraph has been added.`
 }
 
+function mockFileDiffAtCommit(path: string, commitHash: string): string {
+  const filename = path.split('/').pop() ?? 'unknown'
+  const shortHash = commitHash.slice(0, 7)
+  return `diff --git a/${filename} b/${filename}
+index abc1234..${shortHash} 100644
+--- a/${filename}
++++ b/${filename}
+@@ -5,3 +5,5 @@
+ ---
+
+ # Example Note
+-Old paragraph from before ${shortHash}.
++Updated paragraph at commit ${shortHash}.
++
++New content added in this commit.`
+}
+
 let mockHasChanges = true
 
 const mockHandlers: Record<string, (args: any) => any> = {
@@ -1628,6 +1648,7 @@ const mockHandlers: Record<string, (args: any) => any> = {
   get_file_history: (args: { path: string }) => mockFileHistory(args.path),
   get_modified_files: () => mockHasChanges ? mockModifiedFiles() : [],
   get_file_diff: (args: { path: string }) => mockFileDiff(args.path),
+  get_file_diff_at_commit: (args: { path: string; commitHash: string }) => mockFileDiffAtCommit(args.path, args.commitHash),
   git_commit: (args: { message: string }) => {
     mockHasChanges = false
     return `[main abc1234] ${args.message}\n 3 files changed`

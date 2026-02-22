@@ -44,6 +44,11 @@ fn get_file_diff(vault_path: String, path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn get_file_diff_at_commit(vault_path: String, path: String, commit_hash: String) -> Result<String, String> {
+    git::get_file_diff_at_commit(&vault_path, &path, &commit_hash)
+}
+
+#[tauri::command]
 fn git_commit(vault_path: String, message: String) -> Result<String, String> {
     git::git_commit(&vault_path, &message)
 }
@@ -106,6 +111,7 @@ pub fn run() {
             get_file_history,
             get_modified_files,
             get_file_diff,
+            get_file_diff_at_commit,
             git_commit,
             git_push,
             ai_chat,

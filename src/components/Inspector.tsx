@@ -34,6 +34,7 @@ interface InspectorProps {
   allContent: Record<string, string>
   gitHistory: GitCommit[]
   onNavigate: (target: string) => void
+  onViewCommitDiff?: (commitHash: string) => void
   onUpdateFrontmatter?: (path: string, key: string, value: FrontmatterValue) => Promise<void>
   onDeleteProperty?: (path: string, key: string) => Promise<void>
   onAddProperty?: (path: string, key: string, value: FrontmatterValue) => Promise<void>
@@ -297,29 +298,34 @@ function formatRelativeDate(timestamp: number): string {
   return `${months}mo ago`
 }
 
-function GitHistoryPanel({ commits }: { commits: GitCommit[] }) {
+function GitHistoryPanel({ commits, onViewCommitDiff }: { commits: GitCommit[]; onViewCommitDiff?: (commitHash: string) => void }) {
   return (
     <div>
       <h4 className="font-mono-overline mb-2 text-muted-foreground">History</h4>
       {commits.length === 0 ? (
         <p className="m-0 text-[13px] text-muted-foreground">No revision history</p>
       ) : (
-        <>
-          <div className="flex flex-col gap-2.5">
-            {commits.map((c) => (
-              <div key={c.hash} style={{ borderLeft: '2px solid var(--border)', paddingLeft: 10 }}>
-                <div className="mb-0.5 flex items-center justify-between">
-                  <span className="font-mono text-foreground" style={{ fontSize: 11 }}>{c.shortHash}</span>
-                  <span className="text-muted-foreground" style={{ fontSize: 10 }}>{formatRelativeDate(c.date)}</span>
-                </div>
-                <div className="truncate text-xs text-secondary-foreground">{c.message}</div>
+        <div className="flex flex-col gap-2.5">
+          {commits.map((c) => (
+            <div key={c.hash} style={{ borderLeft: '2px solid var(--border)', paddingLeft: 10 }}>
+              <div className="mb-0.5 flex items-center justify-between">
+                <button
+                  className="border-none bg-transparent p-0 font-mono text-primary cursor-pointer hover:underline"
+                  style={{ fontSize: 11 }}
+                  onClick={() => onViewCommitDiff?.(c.hash)}
+                  title={`View diff for ${c.shortHash}`}
+                >
+                  {c.shortHash}
+                </button>
+                <span className="text-muted-foreground" style={{ fontSize: 10 }}>{formatRelativeDate(c.date)}</span>
               </div>
-            ))}
-          </div>
-          <button className="mt-2.5 cursor-not-allowed border-none bg-transparent p-0 py-1 text-xs text-muted-foreground" disabled>
-            View all revisions
-          </button>
-        </>
+              <div className="truncate text-xs text-secondary-foreground">{c.message}</div>
+              {c.author && (
+                <div className="truncate text-muted-foreground" style={{ fontSize: 10, marginTop: 1 }}>{c.author}</div>
+              )}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   )
@@ -348,7 +354,7 @@ function EmptyInspector() {
 
 export function Inspector({
   collapsed, onToggle, entry, content, entries, allContent, gitHistory, onNavigate,
-  onUpdateFrontmatter, onDeleteProperty, onAddProperty,
+  onViewCommitDiff, onUpdateFrontmatter, onDeleteProperty, onAddProperty,
 }: InspectorProps) {
   const backlinks = useBacklinks(entry, entries, allContent)
   const frontmatter = useMemo(() => parseFrontmatter(content), [content])
@@ -398,7 +404,7 @@ export function Inspector({
               />
               <DynamicRelationshipsPanel frontmatter={frontmatter} entries={entries} onNavigate={onNavigate} onAddProperty={onAddProperty ? handleAddProperty : undefined} />
               <BacklinksPanel backlinks={backlinks} onNavigate={onNavigate} />
-              <GitHistoryPanel commits={gitHistory} />
+              <GitHistoryPanel commits={gitHistory} onViewCommitDiff={onViewCommitDiff} />
             </>
           ) : (
             <EmptyInspector />

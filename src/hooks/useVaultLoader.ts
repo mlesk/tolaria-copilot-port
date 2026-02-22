@@ -84,6 +84,14 @@ export function useVaultLoader(vaultPath: string) {
     }
   }, [vaultPath])
 
+  const loadDiffAtCommit = useCallback(async (path: string, commitHash: string): Promise<string> => {
+    if (isTauri()) {
+      return invoke<string>('get_file_diff_at_commit', { vaultPath, path, commitHash })
+    } else {
+      return mockInvoke<string>('get_file_diff_at_commit', { path, commitHash })
+    }
+  }, [vaultPath])
+
   const loadDiff = useCallback(async (path: string): Promise<string> => {
     if (isTauri()) {
       return invoke<string>('get_file_diff', { vaultPath, path })
@@ -122,6 +130,7 @@ export function useVaultLoader(vaultPath: string) {
     loadModifiedFiles,
     loadGitHistory,
     loadDiff,
+    loadDiffAtCommit,
     isFileModified,
     commitAndPush,
   }

@@ -238,7 +238,24 @@ This is a test note with some words to count.
     expect(screen.getByText('i7j8k9l')).toBeInTheDocument()
   })
 
-  it('shows "View all revisions" placeholder button', () => {
+  it('renders commit hashes as clickable buttons', () => {
+    const onViewCommitDiff = vi.fn()
+    render(
+      <Inspector
+        {...defaultProps}
+        entry={mockEntry}
+        content={mockContent}
+        gitHistory={mockGitHistory}
+        onViewCommitDiff={onViewCommitDiff}
+      />
+    )
+    const hashBtn = screen.getByText('a1b2c3d')
+    expect(hashBtn.tagName).toBe('BUTTON')
+    hashBtn.click()
+    expect(onViewCommitDiff).toHaveBeenCalledWith('a1b2c3d4e5f6a7b8')
+  })
+
+  it('shows author name in commit rows', () => {
     render(
       <Inspector
         {...defaultProps}
@@ -247,8 +264,8 @@ This is a test note with some words to count.
         gitHistory={mockGitHistory}
       />
     )
-    const btn = screen.getByText('View all revisions')
-    expect(btn).toBeDisabled()
+    const authors = screen.getAllByText('Luca Rossi')
+    expect(authors.length).toBeGreaterThan(0)
   })
 
   it('shows "No revision history" when no commits', () => {

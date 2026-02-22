@@ -32,6 +32,7 @@ interface EditorProps {
   onReorderTabs?: (fromIndex: number, toIndex: number) => void
   onNavigateWikilink: (target: string) => void
   onLoadDiff?: (path: string) => Promise<string>
+  onLoadDiffAtCommit?: (path: string, commitHash: string) => Promise<string>
   isModified?: (path: string) => boolean
   onCreateNote?: () => void
   // Inspector props
@@ -190,7 +191,7 @@ function SingleEditorView({ editor, entries, onNavigateWikilink }: { editor: Ret
 }
 
 export const Editor = memo(function Editor({
-  tabs, activeTabPath, entries, onSwitchTab, onCloseTab, onReorderTabs, onNavigateWikilink, onLoadDiff, isModified, onCreateNote,
+  tabs, activeTabPath, entries, onSwitchTab, onCloseTab, onReorderTabs, onNavigateWikilink, onLoadDiff, onLoadDiffAtCommit, isModified, onCreateNote,
   inspectorCollapsed, onToggleInspector, inspectorWidth, onInspectorResize,
   inspectorEntry, inspectorContent, allContent, gitHistory,
   onUpdateFrontmatter, onDeleteProperty, onAddProperty,
@@ -358,7 +359,7 @@ export const Editor = memo(function Editor({
 
   const activeTab = tabs.find((t) => t.entry.path === activeTabPath) ?? null
   const isLoadingNewTab = activeTabPath !== null && !activeTab
-  const showDiffToggle = activeTab && isModified?.(activeTab.entry.path)
+  const showDiffToggle = activeTab && (diffMode || isModified?.(activeTab.entry.path))
 
   useEffect(() => {
     setDiffMode(false)
@@ -383,6 +384,20 @@ export const Editor = memo(function Editor({
       setDiffLoading(false)
     }
   }, [diffMode, activeTabPath, onLoadDiff])
+
+  const handleViewCommitDiff = useCallback(async (commitHash: string) => {
+    if (!activeTabPath || !onLoadDiffAtCommit) return
+    setDiffLoading(true)
+    try {
+      const diff = await onLoadDiffAtCommit(activeTabPath, commitHash)
+      setDiffContent(diff)
+      setDiffMode(true)
+    } catch (err) {
+      console.warn('Failed to load commit diff:', err)
+    } finally {
+      setDiffLoading(false)
+    }
+  }, [activeTabPath, onLoadDiffAtCommit])
 
   const activeModified = activeTab ? isModified?.(activeTab.entry.path) ?? false : false
   const wordCount = activeTab ? countWords(activeTab.content) : 0
@@ -444,6 +459,7 @@ export const Editor = memo(function Editor({
         allContent={allContent}
         gitHistory={gitHistory}
         onNavigate={onNavigateWikilink}
+        onViewCommitDiff={handleViewCommitDiff}
         onUpdateFrontmatter={onUpdateFrontmatter}
         onDeleteProperty={onDeleteProperty}
         onAddProperty={onAddProperty}
@@ -475,6 +491,14 @@ export const Editor = memo(function Editor({
           {breadcrumbBar}
           {diffMode && (
             <div className="flex-1 overflow-auto">
+              <button
+                className="flex items-center gap-1.5 px-4 py-2 text-xs text-primary bg-muted border-b border-border cursor-pointer hover:bg-accent transition-colors w-full border-t-0 border-l-0 border-r-0"
+                onClick={handleToggleDiff}
+                title="Back to editor"
+              >
+                <span style={{ fontSize: 14, lineHeight: 1 }}>&larr;</span>
+                Back to editor
+              </button>
               <DiffView diff={diffContent ?? ''} />
             </div>
           )}

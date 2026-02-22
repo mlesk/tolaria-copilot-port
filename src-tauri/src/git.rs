@@ -196,6 +196,52 @@ pub fn get_file_diff(vault_path: &str, file_path: &str) -> Result<String, String
     Ok(stdout)
 }
 
+/// Get git diff for a specific file at a given commit (compared to its parent).
+pub fn get_file_diff_at_commit(vault_path: &str, file_path: &str, commit_hash: &str) -> Result<String, String> {
+    let vault = Path::new(vault_path);
+    let file = Path::new(file_path);
+
+    let relative = file
+        .strip_prefix(vault)
+        .map_err(|_| format!("File {} is not inside vault {}", file_path, vault_path))?;
+
+    let relative_str = relative
+        .to_str()
+        .ok_or_else(|| "Invalid UTF-8 in path".to_string())?;
+
+    // Show diff between commit^ and commit for this file
+    let output = Command::new("git")
+        .args(["diff", &format!("{}^", commit_hash), commit_hash, "--", relative_str])
+        .current_dir(vault)
+        .output()
+        .map_err(|e| format!("Failed to run git diff: {}", e))?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+
+    // If diff is empty, it might be the initial commit (no parent).
+    // Fall back to showing the full file content as added.
+    if stdout.is_empty() {
+        let show = Command::new("git")
+            .args(["show", &format!("{}:{}", commit_hash, relative_str)])
+            .current_dir(vault)
+            .output()
+            .map_err(|e| format!("Failed to run git show: {}", e))?;
+
+        if show.status.success() {
+            let content = String::from_utf8_lossy(&show.stdout);
+            let lines: Vec<String> = content.lines().map(|l| format!("+{}", l)).collect();
+            return Ok(format!(
+                "diff --git a/{0} b/{0}\nnew file\n--- /dev/null\n+++ b/{0}\n@@ -0,0 +1,{1} @@\n{2}",
+                relative_str,
+                lines.len(),
+                lines.join("\n")
+            ));
+        }
+    }
+
+    Ok(stdout)
+}
+
 /// Commit all changes with a message.
 pub fn git_commit(vault_path: &str, message: &str) -> Result<String, String> {
     let vault = Path::new(vault_path);
@@ -399,6 +445,93 @@ mod tests {
         assert!(!diff.is_empty());
         assert!(diff.contains("-Original content."));
         assert!(diff.contains("+Modified content."));
+    }
+
+    #[test]
+    fn test_get_file_diff_at_commit() {
+        let dir = setup_git_repo();
+        let vault = dir.path();
+        let file = vault.join("diff-at-commit.md");
+
+        fs::write(&file, "# First\n\nOriginal content.").unwrap();
+        Command::new("git")
+            .args(["add", "diff-at-commit.md"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+        Command::new("git")
+            .args(["commit", "-m", "First commit"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+
+        fs::write(&file, "# First\n\nModified content.").unwrap();
+        Command::new("git")
+            .args(["add", "diff-at-commit.md"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+        Command::new("git")
+            .args(["commit", "-m", "Second commit"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+
+        // Get hash of second commit
+        let log = Command::new("git")
+            .args(["log", "--format=%H", "-1"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+        let hash = String::from_utf8_lossy(&log.stdout).trim().to_string();
+
+        let diff = get_file_diff_at_commit(
+            vault.to_str().unwrap(),
+            file.to_str().unwrap(),
+            &hash,
+        )
+        .unwrap();
+
+        assert!(!diff.is_empty());
+        assert!(diff.contains("-Original content."));
+        assert!(diff.contains("+Modified content."));
+    }
+
+    #[test]
+    fn test_get_file_diff_at_initial_commit() {
+        let dir = setup_git_repo();
+        let vault = dir.path();
+        let file = vault.join("initial.md");
+
+        fs::write(&file, "# Initial\n\nHello world.").unwrap();
+        Command::new("git")
+            .args(["add", "initial.md"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+        Command::new("git")
+            .args(["commit", "-m", "Initial commit"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+
+        let log = Command::new("git")
+            .args(["log", "--format=%H", "-1"])
+            .current_dir(vault)
+            .output()
+            .unwrap();
+        let hash = String::from_utf8_lossy(&log.stdout).trim().to_string();
+
+        let diff = get_file_diff_at_commit(
+            vault.to_str().unwrap(),
+            file.to_str().unwrap(),
+            &hash,
+        )
+        .unwrap();
+
+        assert!(!diff.is_empty());
+        assert!(diff.contains("+# Initial"));
+        assert!(diff.contains("+Hello world."));
     }
 
     #[test]

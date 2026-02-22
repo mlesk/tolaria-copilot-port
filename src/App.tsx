@@ -216,6 +216,7 @@ function App() {
             onReorderTabs={notes.handleReorderTabs}
             onNavigateWikilink={notes.handleNavigateWikilink}
             onLoadDiff={vault.loadDiff}
+            onLoadDiffAtCommit={vault.loadDiffAtCommit}
             isModified={vault.isFileModified}
             onCreateNote={openCreateDialog}
             inspectorCollapsed={inspectorCollapsed}
