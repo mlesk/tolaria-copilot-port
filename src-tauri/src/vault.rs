@@ -565,8 +565,7 @@ pub fn get_note_content(path: &str) -> Result<String, String> {
 pub fn save_note_content(path: &str, content: &str) -> Result<(), String> {
     let file_path = Path::new(path);
     validate_save_path(file_path, path)?;
-    fs::write(file_path, content)
-        .map_err(|e| format!("Failed to save {}: {}", path, e))
+    fs::write(file_path, content).map_err(|e| format!("Failed to save {}: {}", path, e))
 }
 
 fn validate_save_path(file_path: &Path, display_path: &str) -> Result<(), String> {
@@ -2061,7 +2060,9 @@ References:
     fn test_save_note_content_nonexistent_parent() {
         let result = save_note_content("/nonexistent/parent/dir/file.md", "content");
         assert!(result.is_err());
-        assert!(result.unwrap_err().contains("Parent directory does not exist"));
+        assert!(result
+            .unwrap_err()
+            .contains("Parent directory does not exist"));
     }
 
     #[test]
@@ -2093,7 +2094,8 @@ References:
         let original = "---\nIs A: Project\nStatus: Active\n---\n# My Project\n\nOriginal body.";
         create_test_file(dir.path(), "note.md", original);
 
-        let updated = "---\nIs A: Project\nStatus: Active\n---\n# My Project\n\nUpdated body with changes.";
+        let updated =
+            "---\nIs A: Project\nStatus: Active\n---\n# My Project\n\nUpdated body with changes.";
         save_note_content(file_path.to_str().unwrap(), updated).unwrap();
 
         let saved = fs::read_to_string(&file_path).unwrap();
