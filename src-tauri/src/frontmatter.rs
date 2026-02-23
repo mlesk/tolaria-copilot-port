@@ -215,6 +215,20 @@ where
     Ok(updated)
 }
 
+/// Update a single frontmatter property in a markdown file.
+pub fn update_frontmatter(path: &str, key: &str, value: FrontmatterValue) -> Result<String, String> {
+    with_frontmatter(path, |content| {
+        update_frontmatter_content(content, key, Some(value.clone()))
+    })
+}
+
+/// Delete a frontmatter property from a markdown file.
+pub fn delete_frontmatter_property(path: &str, key: &str) -> Result<String, String> {
+    with_frontmatter(path, |content| {
+        update_frontmatter_content(content, key, None)
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

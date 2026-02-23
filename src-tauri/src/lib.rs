@@ -6,6 +6,8 @@ pub mod menu;
 pub mod settings;
 pub mod vault;
 
+use std::path::Path;
+
 use ai_chat::{AiChatRequest, AiChatResponse};
 use frontmatter::FrontmatterValue;
 use git::{GitCommit, ModifiedFile};
@@ -15,12 +17,12 @@ use vault::{RenameResult, VaultEntry};
 
 #[tauri::command]
 fn list_vault(path: String) -> Result<Vec<VaultEntry>, String> {
-    vault::scan_vault_cached(&path)
+    vault::scan_vault_cached(Path::new(&path))
 }
 
 #[tauri::command]
 fn get_note_content(path: String) -> Result<String, String> {
-    vault::get_note_content(&path)
+    vault::get_note_content(Path::new(&path))
 }
 
 #[tauri::command]
@@ -34,12 +36,12 @@ fn update_frontmatter(
     key: String,
     value: FrontmatterValue,
 ) -> Result<String, String> {
-    vault::update_frontmatter(&path, &key, value)
+    frontmatter::update_frontmatter(&path, &key, value)
 }
 
 #[tauri::command]
 fn delete_frontmatter_property(path: String, key: String) -> Result<String, String> {
-    vault::delete_frontmatter_property(&path, &key)
+    frontmatter::delete_frontmatter_property(&path, &key)
 }
 
 #[tauri::command]
