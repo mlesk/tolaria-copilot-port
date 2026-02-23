@@ -30,6 +30,35 @@
   overflow-y: auto;
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+/* Drag-over state: subtle border highlight */
+.editor__blocknote-container--drag-over {
+  outline: 2px dashed var(--primary, #155DFF);
+  outline-offset: -2px;
+}
+
+/* Drop overlay shown when dragging images over the editor */
+.editor__drop-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(21, 93, 255, 0.06);
+  pointer-events: none;
+}
+
+.editor__drop-overlay-label {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: var(--background, #fff);
+  color: var(--primary, #155DFF);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .editor__blocknote-container .bn-container {

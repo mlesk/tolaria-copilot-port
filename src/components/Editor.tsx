@@ -4,8 +4,7 @@ import { filterSuggestionItems } from '@blocknote/core/extensions'
 import { createReactInlineContentSpec, useCreateBlockNote, SuggestionMenuController } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
-import { invoke, convertFileSrc } from '@tauri-apps/api/core'
-import { isTauri } from '../mock-tauri'
+import { uploadImageFile, useImageDrop } from '../hooks/useImageDrop'
 import type { VaultEntry, GitCommit } from '../types'
 import { Inspector, type FrontmatterValue } from './Inspector'
 import { AIChatPanel } from './AIChatPanel'
@@ -103,10 +102,12 @@ const schema = BlockNoteSchema.create({
 })
 
 /** Single BlockNote editor view — content is swapped via replaceBlocks */
-function SingleEditorView({ editor, entries, onNavigateWikilink, onChange }: { editor: ReturnType<typeof useCreateBlockNote>; entries: VaultEntry[]; onNavigateWikilink: (target: string) => void; onChange?: () => void }) {
+function SingleEditorView({ editor, entries, onNavigateWikilink, onChange, vaultPath }: { editor: ReturnType<typeof useCreateBlockNote>; entries: VaultEntry[]; onNavigateWikilink: (target: string) => void; onChange?: () => void; vaultPath?: string }) {
   const navigateRef = useRef(onNavigateWikilink)
   useEffect(() => { navigateRef.current = onNavigateWikilink }, [onNavigateWikilink])
   const { cssVars } = useEditorTheme()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { isDragOver } = useImageDrop({ editor, containerRef, vaultPath })
 
   // Keep module-level ref in sync so WikiLink renderer can access vault entries
   useEffect(() => {
@@ -156,7 +157,12 @@ function SingleEditorView({ editor, entries, onNavigateWikilink, onChange }: { e
   }, [baseItems, editor])
 
   return (
-    <div className="editor__blocknote-container" style={cssVars as React.CSSProperties}>
+    <div ref={containerRef} className={`editor__blocknote-container${isDragOver ? ' editor__blocknote-container--drag-over' : ''}`} style={cssVars as React.CSSProperties}>
+      {isDragOver && (
+        <div className="editor__drop-overlay">
+          <div className="editor__drop-overlay-label">Drop image here</div>
+        </div>
+      )}
       <BlockNoteView
         editor={editor}
         theme="light"
@@ -194,29 +200,7 @@ export const Editor = memo(function Editor({
   // Single editor instance — reused across all tabs
   const editor = useCreateBlockNote({
     schema,
-    uploadFile: async (file: File) => {
-      if (isTauri() && vaultPathRef.current) {
-        // Tauri mode: save to vault/attachments and return a stable asset URL
-        const buf = await file.arrayBuffer()
-        const bytes = new Uint8Array(buf)
-        let binary = ''
-        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
-        const base64 = btoa(binary)
-        const savedPath = await invoke<string>('save_image', {
-          vaultPath: vaultPathRef.current,
-          filename: file.name,
-          data: base64,
-        })
-        return convertFileSrc(savedPath)
-      }
-      // Browser dev mode: use data URL (survives reload, acceptable for dev)
-      return new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
-        reader.onerror = () => reject(reader.error)
-        reader.readAsDataURL(file)
-      })
-    },
+    uploadFile: (file: File) => uploadImageFile(file, vaultPathRef.current),
   })
   // Cache parsed blocks per tab path for instant switching
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- BlockNote block arrays
@@ -551,6 +535,7 @@ export const Editor = memo(function Editor({
                 entries={entries}
                 onNavigateWikilink={onNavigateWikilink}
                 onChange={handleEditorChange}
+                vaultPath={vaultPath}
               />
             </div>
           )}
