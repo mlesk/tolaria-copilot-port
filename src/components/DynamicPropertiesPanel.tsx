@@ -148,7 +148,7 @@ function DateValue({ value, onSave }: {
           <span className={`min-w-0 truncate${!formatted ? ' text-muted-foreground' : ''}`}>{formatted || 'Pick a date\u2026'}</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="end" data-testid="date-picker-popover">
+      <PopoverContent className="w-auto p-0" align="end" side="left" data-testid="date-picker-popover">
         <Calendar
           mode="single"
           selected={selectedDate}
@@ -272,7 +272,7 @@ function AddDateInput({ value, onChange }: { value: string; onChange: (v: string
           </span>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto p-0" align="start" side="left">
         <Calendar
           mode="single"
           selected={selectedDate}
@@ -358,7 +358,7 @@ function AddPropertyForm({ onAdd, onCancel, vaultStatuses }: {
         >
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent position="popper" side="left">
           {DISPLAY_MODE_OPTIONS.map(opt => {
             const OptIcon = DISPLAY_MODE_ICONS[opt.value]
             return (
@@ -428,7 +428,7 @@ function TypeSelector({ isA, customColorKey, availableTypes, onUpdateProperty, o
         >
           <SelectValue placeholder="None" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent position="popper" side="left">
           <SelectItem value={TYPE_NONE}>None</SelectItem>
           <SelectSeparator />
           {options.map(type => (
