@@ -5,7 +5,7 @@ use agent_client_protocol::schema::{
     SessionNotification, SessionUpdate, StopReason, ToolCall, ToolCallContent, ToolCallStatus,
     ToolCallUpdate, ToolKind,
 };
-use agent_client_protocol::{Client, ConnectTo};
+use agent_client_protocol::Client;
 use agent_client_protocol_tokio::AcpAgent;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -137,10 +137,9 @@ fn build_session_request(
 }
 
 fn build_tolaria_mcp_server(vault_path: &str) -> Result<McpServer, agent_client_protocol::Error> {
-    let node =
-        crate::mcp::find_node().map_err(agent_client_protocol::Error::into_internal_error)?;
+    let node = crate::mcp::find_node().map_err(agent_client_protocol::util::internal_error)?;
     let server_dir =
-        crate::mcp::mcp_server_dir().map_err(agent_client_protocol::Error::into_internal_error)?;
+        crate::mcp::mcp_server_dir().map_err(agent_client_protocol::util::internal_error)?;
     let index_js = server_dir.join("index.js");
 
     Ok(McpServer::Stdio(
@@ -370,6 +369,7 @@ fn normalize_tool_name(tool_call: &ToolCall) -> String {
                 tool_call.title.clone()
             }
         }
+        _ => tool_call.title.clone(),
     }
 }
 
@@ -398,6 +398,7 @@ fn tool_call_content_string(content: &ToolCallContent) -> Option<String> {
         },
         ToolCallContent::Diff(diff) => serde_json::to_string(diff).ok(),
         ToolCallContent::Terminal(terminal) => Some(format!("terminal:{}", terminal.terminal_id)),
+        _ => None,
     }
 }
 
