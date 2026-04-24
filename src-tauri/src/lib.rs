@@ -2,6 +2,7 @@ pub mod ai_agents;
 pub mod app_updater;
 pub mod claude_cli;
 mod commands;
+pub mod copilot_cli;
 pub mod frontmatter;
 pub mod git;
 pub mod mcp;

@@ -7,6 +7,7 @@ use std::process::{Command, Stdio};
 #[serde(rename_all = "snake_case")]
 pub enum AiAgentId {
     ClaudeCode,
+    CopilotCli,
     Codex,
 }
 
@@ -19,6 +20,7 @@ pub struct AiAgentAvailability {
 #[derive(Debug, Clone, Serialize)]
 pub struct AiAgentsStatus {
     pub claude_code: AiAgentAvailability,
+    pub copilot_cli: AiAgentAvailability,
     pub codex: AiAgentAvailability,
 }
 
@@ -62,13 +64,14 @@ pub struct AiAgentStreamRequest {
 pub fn get_ai_agents_status() -> AiAgentsStatus {
     AiAgentsStatus {
         claude_code: availability_from_claude(),
+        copilot_cli: crate::copilot_cli::check_cli(),
         codex: availability_from_codex(),
     }
 }
 
 pub fn run_ai_agent_stream<F>(request: AiAgentStreamRequest, mut emit: F) -> Result<String, String>
 where
-    F: FnMut(AiAgentStreamEvent),
+    F: FnMut(AiAgentStreamEvent) + Send + 'static,
 {
     match request.agent {
         AiAgentId::ClaudeCode => {
@@ -83,6 +86,7 @@ where
                 }
             })
         }
+        AiAgentId::CopilotCli => crate::copilot_cli::run_agent_stream(request, emit),
         AiAgentId::Codex => run_codex_agent_stream(request, emit),
     }
 }
@@ -166,7 +170,7 @@ fn find_existing_binary(candidates: Vec<PathBuf>) -> Option<PathBuf> {
 
 fn run_codex_agent_stream<F>(request: AiAgentStreamRequest, mut emit: F) -> Result<String, String>
 where
-    F: FnMut(AiAgentStreamEvent),
+    F: FnMut(AiAgentStreamEvent) + Send + 'static,
 {
     let binary = find_codex_binary()?;
     let args = build_codex_args(&request)?;
@@ -389,6 +393,7 @@ mod tests {
     fn normalize_status_contains_both_agents() {
         let status = get_ai_agents_status();
         assert!(matches!(status.claude_code.installed, true | false));
+        assert!(matches!(status.copilot_cli.installed, true | false));
         assert!(matches!(status.codex.installed, true | false));
     }
 

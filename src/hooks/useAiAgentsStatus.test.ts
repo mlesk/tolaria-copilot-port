@@ -23,6 +23,7 @@ describe('useAiAgentsStatus', () => {
       if (command === 'get_ai_agents_status') {
         return Promise.resolve({
           claude_code: { installed: true, version: '1.0.20' },
+          copilot_cli: { installed: true, version: '1.0.31' },
           codex: { installed: false, version: null },
         })
       }
@@ -36,6 +37,7 @@ describe('useAiAgentsStatus', () => {
 
     await waitFor(() => {
       expect(result.current.claude_code).toEqual({ status: 'installed', version: '1.0.20' })
+      expect(result.current.copilot_cli).toEqual({ status: 'installed', version: '1.0.31' })
       expect(result.current.codex).toEqual({ status: 'missing', version: null })
     })
   })
@@ -47,6 +49,7 @@ describe('useAiAgentsStatus', () => {
 
     await waitFor(() => {
       expect(result.current.claude_code.status).toBe('missing')
+      expect(result.current.copilot_cli.status).toBe('missing')
       expect(result.current.codex.status).toBe('missing')
     })
   })

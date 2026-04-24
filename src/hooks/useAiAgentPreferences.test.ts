@@ -14,6 +14,7 @@ const settings = {
 
 const aiAgentsStatus = {
   claude_code: { status: 'installed' as const, version: '1.0.20' },
+  copilot_cli: { status: 'missing' as const, version: null },
   codex: { status: 'missing' as const, version: null },
 }
 
@@ -51,9 +52,9 @@ describe('useAiAgentPreferences', () => {
 
     expect(saveSettings).toHaveBeenCalledWith({
       ...settings,
-      default_ai_agent: 'codex',
+      default_ai_agent: 'copilot_cli',
     })
-    expect(onToast).toHaveBeenCalledWith('Default AI agent: Codex')
+    expect(onToast).toHaveBeenCalledWith('Default AI agent: Copilot CLI')
   })
 
   it('keeps the browser mock agent composer enabled when no CLI is installed', () => {
@@ -62,6 +63,7 @@ describe('useAiAgentPreferences', () => {
       saveSettings: vi.fn(),
       aiAgentsStatus: {
         claude_code: { status: 'missing', version: null },
+        copilot_cli: { status: 'missing', version: null },
         codex: { status: 'missing', version: null },
       },
     }))

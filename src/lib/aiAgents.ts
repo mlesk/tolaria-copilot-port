@@ -1,4 +1,4 @@
-export type AiAgentId = 'claude_code' | 'codex'
+export type AiAgentId = 'claude_code' | 'copilot_cli' | 'codex'
 
 export type AiAgentStatus = 'checking' | 'installed' | 'missing'
 
@@ -9,6 +9,7 @@ export interface AiAgentAvailability {
 
 export interface AiAgentsStatus {
   claude_code: AiAgentAvailability
+  copilot_cli: AiAgentAvailability
   codex: AiAgentAvailability
 }
 
@@ -29,6 +30,12 @@ export const AI_AGENT_DEFINITIONS: readonly AiAgentDefinition[] = [
     installUrl: 'https://docs.anthropic.com/en/docs/claude-code',
   },
   {
+    id: 'copilot_cli',
+    label: 'Copilot CLI',
+    shortLabel: 'Copilot',
+    installUrl: 'https://docs.github.com/copilot/concepts/agents/about-copilot-cli',
+  },
+  {
     id: 'codex',
     label: 'Codex',
     shortLabel: 'Codex',
@@ -43,6 +50,7 @@ export function createAiAgentAvailability(status: AiAgentStatus = 'checking', ve
 export function createCheckingAiAgentsStatus(): AiAgentsStatus {
   return {
     claude_code: createAiAgentAvailability(),
+    copilot_cli: createAiAgentAvailability(),
     codex: createAiAgentAvailability(),
   }
 }
@@ -50,12 +58,13 @@ export function createCheckingAiAgentsStatus(): AiAgentsStatus {
 export function createMissingAiAgentsStatus(): AiAgentsStatus {
   return {
     claude_code: createAiAgentAvailability('missing'),
+    copilot_cli: createAiAgentAvailability('missing'),
     codex: createAiAgentAvailability('missing'),
   }
 }
 
 export function normalizeStoredAiAgent(value: string | null | undefined): AiAgentId | null {
-  if (value === 'claude_code' || value === 'codex') return value
+  if (value === 'claude_code' || value === 'copilot_cli' || value === 'codex') return value
   return null
 }
 
@@ -78,6 +87,7 @@ function normalizeAvailability(agent: { installed?: boolean | null; version?: st
 export function normalizeAiAgentsStatus(payload: Partial<Record<AiAgentId, { installed?: boolean | null; version?: string | null }>> | null | undefined): AiAgentsStatus {
   return {
     claude_code: normalizeAvailability(payload?.claude_code),
+    copilot_cli: normalizeAvailability(payload?.copilot_cli),
     codex: normalizeAvailability(payload?.codex),
   }
 }

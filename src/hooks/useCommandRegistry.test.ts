@@ -597,6 +597,7 @@ describe('reload-vault command', () => {
     const config = makeConfig({
       aiAgentsStatus: {
         claude_code: { status: 'installed', version: '1.0.20' },
+        copilot_cli: { status: 'installed', version: '1.0.31' },
         codex: { status: 'installed', version: '0.37.0' },
       },
       selectedAiAgent: 'claude_code',
@@ -617,6 +618,7 @@ describe('reload-vault command', () => {
     const config = makeConfig({
       aiAgentsStatus: {
         claude_code: { status: 'installed', version: '1.0.20' },
+        copilot_cli: { status: 'missing', version: null },
         codex: { status: 'missing', version: null },
       },
       selectedAiAgent: 'claude_code',

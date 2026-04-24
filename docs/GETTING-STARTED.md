@@ -92,7 +92,7 @@ tolaria/
 │   │   ├── useNoteRename.ts     # Note renaming + wikilink updates
 │   │   ├── useAiAgent.ts         # Legacy Claude-specific stream helpers reused by the shared agent hook
 │   │   ├── useCliAiAgent.ts      # Selected AI agent state + normalized tool tracking
-│   │   ├── useAiAgentsStatus.ts  # Claude/Codex availability polling
+│   │   ├── useAiAgentsStatus.ts  # Claude/Copilot/Codex availability polling
 │   │   ├── useAiAgentPreferences.ts # Default-agent persistence + cycling
 │   │   ├── useAiActivity.ts      # MCP UI bridge listener
 │   │   ├── useAutoSync.ts        # Auto git pull/push
@@ -234,7 +234,8 @@ tolaria/
 | `src-tauri/src/frontmatter/ops.rs` | YAML manipulation — how properties are updated/deleted in files. |
 | `src-tauri/src/git/` | All git operations (clone, commit, pull, push, conflicts, pulse, add-remote). |
 | `src-tauri/src/search.rs` | Keyword search — scans vault files with walkdir. |
-| `src-tauri/src/ai_agents.rs` | Shared CLI-agent availability checks, safe-default Codex adapter, and stream normalization. |
+| `src-tauri/src/ai_agents.rs` | Shared CLI-agent availability checks, Copilot/Codex dispatch, and stream normalization. |
+| `src-tauri/src/copilot_cli.rs` | Copilot CLI ACP session startup, permission handling, and stream normalization. |
 | `src-tauri/src/claude_cli.rs` | Claude CLI subprocess spawning + NDJSON stream parsing. |
 | `src-tauri/src/app_updater.rs` | Desktop updater bridge — selects alpha/stable manifests and streams install progress. |
 
@@ -389,4 +390,5 @@ BASE_URL="http://localhost:5173" npx playwright test tests/smoke/<slug>.spec.ts
 2. **Context building**: Edit `src/utils/ai-context.ts` for what data is sent to the agent
 3. **Tool action display**: Edit `src/components/AiActionCard.tsx`
 4. **Claude CLI arguments**: Edit `src-tauri/src/claude_cli.rs` (`run_agent_stream()`)
-5. **Shared agent adapters / Codex args**: Edit `src-tauri/src/ai_agents.rs` (keep Codex on the normal approval/sandbox path unless you are intentionally designing an advanced mode)
+5. **Shared agent adapters / Copilot/Codex wiring**: Edit `src-tauri/src/ai_agents.rs` for registry/dispatch, `src-tauri/src/copilot_cli.rs` for ACP behavior, and keep Codex on the normal approval/sandbox path unless you are intentionally designing an advanced mode
+6. **Copilot ACP sessions**: Tolaria starts Copilot CLI with `copilot --acp`, injects the Tolaria MCP server through ACP `mcp_servers`, and currently rejects interactive ACP permission prompts until a dedicated approval UI exists

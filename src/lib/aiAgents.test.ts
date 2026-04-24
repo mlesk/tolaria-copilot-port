@@ -9,6 +9,7 @@ import {
 describe('aiAgents helpers', () => {
   it('normalizes stored agent ids', () => {
     expect(normalizeStoredAiAgent('claude_code')).toBe('claude_code')
+    expect(normalizeStoredAiAgent('copilot_cli')).toBe('copilot_cli')
     expect(normalizeStoredAiAgent('codex')).toBe('codex')
     expect(normalizeStoredAiAgent('cursor')).toBeNull()
   })
@@ -21,15 +22,18 @@ describe('aiAgents helpers', () => {
   it('normalizes raw status payloads', () => {
     const statuses = normalizeAiAgentsStatus({
       claude_code: { installed: true, version: '1.0.20' },
+      copilot_cli: { installed: true, version: '1.0.31' },
       codex: { installed: false, version: null },
     })
 
     expect(statuses.claude_code).toEqual({ status: 'installed', version: '1.0.20' })
+    expect(statuses.copilot_cli).toEqual({ status: 'installed', version: '1.0.31' })
     expect(statuses.codex).toEqual({ status: 'missing', version: null })
   })
 
   it('cycles between the supported agents', () => {
-    expect(getNextAiAgentId('claude_code')).toBe('codex')
+    expect(getNextAiAgentId('claude_code')).toBe('copilot_cli')
+    expect(getNextAiAgentId('copilot_cli')).toBe('codex')
     expect(getNextAiAgentId('codex')).toBe('claude_code')
   })
 })
