@@ -315,7 +315,8 @@ fn maybe_emit_stop_reason_text<F>(
 
     let message = match stop_reason {
         StopReason::Cancelled if rejected_permissions > 0 && !saw_text => Some(
-            "Copilot CLI requested ACP permission approval. Tolaria currently keeps Copilot ACP sessions least-privileged and rejects interactive permission prompts until a dedicated approval UI exists.".to_string(),
+            "Copilot CLI needs additional permissions. Approve them by running `copilot` interactively in your terminal."
+                .to_string(),
         ),
         StopReason::MaxTokens if !saw_text => {
             Some("Copilot CLI reached the maximum token budget for this turn.".to_string())
@@ -336,6 +337,22 @@ fn maybe_emit_stop_reason_text<F>(
     }
 }
 
+fn normalize_tool_name_from_title(title: &str) -> Option<&'static str> {
+    if title.contains("command") || title.contains("shell") || title.contains("terminal") {
+        Some("Bash")
+    } else if title.contains("write") || title.contains("create") {
+        Some("Write")
+    } else if title.contains("edit") || title.contains("update") {
+        Some("Edit")
+    } else if title.contains("read") {
+        Some("Read")
+    } else if title.contains("search") {
+        Some("Grep")
+    } else {
+        None
+    }
+}
+
 fn normalize_tool_name(tool_call: &ToolCall) -> String {
     let title = tool_call.title.to_ascii_lowercase();
 
@@ -343,32 +360,16 @@ fn normalize_tool_name(tool_call: &ToolCall) -> String {
         ToolKind::Execute => "Bash".into(),
         ToolKind::Read => "Read".into(),
         ToolKind::Search => "Grep".into(),
-        ToolKind::Edit => {
-            if title.contains("create") || title.contains("write") {
-                "Write".into()
-            } else {
-                "Edit".into()
-            }
-        }
+        ToolKind::Edit => normalize_tool_name_from_title(&title)
+            .unwrap_or("Edit")
+            .into(),
         ToolKind::Move | ToolKind::Delete => "Edit".into(),
         ToolKind::Fetch => "Fetch".into(),
         ToolKind::Think => "Think".into(),
         ToolKind::SwitchMode => "SwitchMode".into(),
-        ToolKind::Other => {
-            if title.contains("command") || title.contains("shell") || title.contains("terminal") {
-                "Bash".into()
-            } else if title.contains("write") || title.contains("create") {
-                "Write".into()
-            } else if title.contains("edit") || title.contains("update") {
-                "Edit".into()
-            } else if title.contains("read") {
-                "Read".into()
-            } else if title.contains("search") {
-                "Grep".into()
-            } else {
-                tool_call.title.clone()
-            }
-        }
+        ToolKind::Other => normalize_tool_name_from_title(&title)
+            .map(str::to_string)
+            .unwrap_or_else(|| tool_call.title.clone()),
         _ => tool_call.title.clone(),
     }
 }
@@ -524,8 +525,7 @@ fn format_copilot_error(message: String) -> String {
         .iter()
         .any(|pattern| lower.contains(pattern))
     {
-        "Copilot CLI is not authenticated. Run `copilot login` or launch `copilot` in your terminal."
-            .into()
+        "Copilot CLI is not authenticated. Run `copilot login` in your terminal.".into()
     } else {
         message
     }
