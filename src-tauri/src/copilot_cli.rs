@@ -647,7 +647,7 @@ mod tests {
         assert!(matches!(
             &events[0],
             AiAgentStreamEvent::TextDelta { text }
-                if text.contains("rejects interactive permission prompts")
+                if text.contains("needs additional permissions")
         ));
     }
 
