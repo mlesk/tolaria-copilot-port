@@ -79,7 +79,7 @@ export function AiAgentsOnboardingPrompt({
   onContinue,
 }: AiAgentsOnboardingPromptProps) {
   const copy = getPromptCopy(statuses)
-  const showLegacyClaudeCompatibility = statuses.claude_code.status !== 'installed'
+  const showEmptyState = !hasAnyInstalledAiAgent(statuses)
   const missingAgents = AI_AGENT_DEFINITIONS.filter((definition) => statuses[definition.id].status === 'missing')
 
   return (
@@ -104,14 +104,14 @@ export function AiAgentsOnboardingPrompt({
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {showLegacyClaudeCompatibility ? (
+          {showEmptyState ? (
             <div
               className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-left"
-              data-testid="claude-onboarding-screen"
+              data-testid="ai-agents-onboarding-empty-state"
             >
-              <div className="text-sm font-medium text-amber-900">Claude Code not detected</div>
+              <div className="text-sm font-medium text-amber-900">Install a supported CLI agent</div>
               <p className="mt-1 text-xs leading-5 text-amber-800">
-                Install Claude Code or continue without it.
+                Tolaria currently supports Claude Code, Copilot CLI, and Codex.
               </p>
             </div>
           ) : null}
@@ -136,7 +136,6 @@ export function AiAgentsOnboardingPrompt({
               type="button"
               onClick={onContinue}
               disabled={isAiAgentsStatusChecking(statuses)}
-              data-testid={showLegacyClaudeCompatibility ? 'claude-onboarding-continue' : undefined}
             >
               {hasAnyInstalledAiAgent(statuses) ? 'Continue' : 'Continue without it'}
             </Button>

@@ -97,7 +97,7 @@ flowchart LR
 | Build | Vite | 7.3.1 |
 | Backend language | Rust (edition 2021) | 1.77.2 |
 | Frontmatter parsing | gray_matter | 0.2 |
-| AI (agent panel) | CLI agent adapters (Claude Code + Codex) | - |
+| AI (agent panel) | CLI agent adapters (Claude Code + Copilot CLI + Codex) | - |
 | Search | Keyword (walkdir-based file scan) | - |
 | MCP | @modelcontextprotocol/sdk | 1.0 |
 | Tests | Vitest (unit), Playwright (E2E/smoke), cargo test (Rust) | - |
@@ -131,11 +131,11 @@ flowchart TD
             GIT["git/\n(commit, sync, clone)"]
             SETTINGS["settings.rs"]
             SEARCH["search.rs"]
-            CLI["ai_agents.rs\n+ claude_cli.rs"]
+            CLI["ai_agents.rs\n+ claude_cli.rs\n+ copilot_cli.rs"]
         end
 
         subgraph EXT["External Services"]
-            CCLI["Claude CLI / Codex CLI\n(agent subprocesses)"]
+            CCLI["Claude CLI / Copilot CLI / Codex CLI\n(agent subprocesses)"]
             MCP["MCP Server\n(ws://9710, 9711)"]
             GCLI["git CLI\n(system executable)"]
             REMOTE["Git remotes\n(GitHub/GitLab/Gitea/etc.)"]
@@ -211,8 +211,8 @@ Full agent mode — spawns the selected local CLI agent as a subprocess with too
 
 1. **Frontend** (`AiPanel` + `useCliAiAgent` + `aiAgents.ts`) — streaming UI with reasoning blocks, tool action cards, response display, onboarding, and default-agent selection
 2. **Backend** (`ai_agents.rs`) — normalizes agent availability and streaming, dispatching to per-agent adapters
-3. **Agent adapters** — Claude Code still uses `claude_cli.rs`; Codex runs through `codex exec --json` with the CLI's normal approval / sandbox defaults
-4. **MCP Integration** — Claude receives the generated MCP config file path, while Codex receives the same Tolaria MCP server via transient `-c mcp_servers.tolaria.*` config overrides
+3. **Agent adapters** — Claude Code still uses `claude_cli.rs`; Copilot CLI runs through `copilot_cli.rs` with ACP session + prompt-turn requests; Codex runs through `codex exec --json` with the CLI's normal approval / sandbox defaults
+4. **MCP Integration** — Claude receives the generated MCP config file path, Copilot receives the same Tolaria MCP server through ACP `mcp_servers`, and Codex receives it via transient `-c mcp_servers.tolaria.*` config overrides
 
 Claude Code availability intentionally does not depend only on the desktop app's inherited `PATH`. The detector checks the current process path, the user's login shell, and supported local/toolchain install locations such as native `~/.local/bin`, local `~/.claude/local`, Mise/asdf shims, npm-global, and Homebrew paths so first-run onboarding works on fresh macOS installs.
 
@@ -229,11 +229,11 @@ sequenceDiagram
     U->>FE: sendMessage(text, references)
     FE->>FE: buildContextSnapshot(activeNote, linkedNotes, openTabs)
     FE->>R: invoke('stream_ai_agent', {agent, message, systemPrompt, vaultPath})
-    R->>R: pick adapter for claude_code or codex
+    R->>R: pick adapter for claude_code, copilot_cli, or codex
     R->>C: spawn agent with MCP-enabled config
 
     loop Normalized stream
-        C-->>R: Claude NDJSON or Codex JSONL events
+        C-->>R: Claude NDJSON, Copilot ACP session updates, or Codex JSONL events
         R-->>FE: emit("ai-agent-stream", event)
         alt TextDelta
             FE->>FE: accumulate response (revealed on Done)
@@ -275,11 +275,11 @@ Token budget: 60% of 180k context limit (~108k tokens max). Active note gets pri
 
 ### Authentication
 
-Each CLI agent authenticates itself outside Tolaria. Claude Code uses its existing CLI login; Codex surfaces a friendly prompt to run `codex login` when needed. Tolaria does not store model-provider API keys in app settings.
+Each CLI agent authenticates itself outside Tolaria. Claude Code uses its existing CLI login, Copilot CLI surfaces a friendly prompt to run `copilot login` when needed, and Codex surfaces a friendly prompt to run `codex login` when needed. Tolaria does not store model-provider API keys in app settings.
 
 ## MCP Server
 
-The MCP server (`mcp-server/`) exposes vault operations as tools for AI assistants (Claude Code, Cursor, or any MCP-compatible client).
+The MCP server (`mcp-server/`) exposes vault operations as tools for AI assistants (Claude Code, Copilot CLI through ACP `mcp_servers`, Cursor, or any MCP-compatible client).
 
 ### Tool Surface (14 tools)
 
@@ -302,7 +302,7 @@ The MCP server (`mcp-server/`) exposes vault operations as tools for AI assistan
 
 ### Transports
 
-- **stdio** — standard MCP transport for Claude Code / Cursor (`node mcp-server/index.js`)
+- **stdio** — standard MCP transport for Claude Code / Cursor and the subprocess Tolaria injects into Copilot ACP sessions (`node mcp-server/index.js`)
 - **WebSocket** — live bridge for Tolaria app integration:
   - Port **9710**: Tool bridge — AI/Claude clients call vault tools here
   - Port **9711**: UI bridge — Frontend listens for UI action broadcasts from MCP tools
@@ -445,7 +445,7 @@ On first launch, `useOnboarding` checks if the default vault exists. If not, it 
 
 When an opened folder is not yet a git repo, `init_git_repo` runs `git init`, ensures Tolaria's default `.gitignore`, stages the vault, and writes the initial `Initial vault setup` commit. That app-managed setup commit explicitly disables commit signing for the single command so inherited global or local `commit.gpgsign` preferences cannot strand onboarding when GPG is missing or misconfigured. Later `git_commit` calls honor the user's signing configuration first, then retry the same app-managed commit once with `commit.gpgsign=false` only when Git reports a signing-helper failure, so working GPG/SSH signing setups continue to sign while broken GPG setups do not create repeated opaque commit failures.
 
-Once a vault is ready, `useAiAgentsOnboarding` can show a one-time `AiAgentsOnboardingPrompt`. That prompt reads `useAiAgentsStatus` so first launch surfaces whether Claude Code and Codex are installed, offers per-agent install links when they are missing, and stores local dismissal so the prompt does not repeat on every launch.
+Once a vault is ready, `useAiAgentsOnboarding` can show a one-time `AiAgentsOnboardingPrompt`. That prompt reads `useAiAgentsStatus` so first launch surfaces whether Claude Code, Copilot CLI, and Codex are installed, offers per-agent install links when they are missing, and stores local dismissal so the prompt does not repeat on every launch.
 
 `useGettingStartedClone` reuses the same parent-folder semantics for the status-bar / command-palette clone action, and `Toast` is rendered through the AI-agents onboarding gate so the resolved destination path stays visible right after a successful clone.
 
@@ -606,6 +606,7 @@ The vault backend (`src-tauri/src/vault/`) is split into focused submodules:
 | `search.rs` | Keyword search — walkdir-based vault file scan |
 | `ai_agents.rs` | Shared CLI-agent detection, stream normalization, and adapter dispatch |
 | `claude_cli.rs` | Claude Code subprocess spawning + NDJSON stream parsing |
+| `copilot_cli.rs` | Copilot CLI subprocess spawning + ACP session/update normalization |
 | `mcp.rs` | MCP server spawning + explicit config registration/removal |
 | `commands/` | Tauri command handlers (split into submodules) |
 | `settings.rs` | App settings persistence |
@@ -689,7 +690,7 @@ The vault backend (`src-tauri/src/vault/`) is split into focused submodules:
 | `stream_claude_chat` | Claude CLI chat mode (streaming) |
 | `stream_claude_agent` | Claude CLI agent mode (streaming + tools) |
 | `check_claude_cli` | Check if Claude CLI is available |
-| `get_ai_agents_status` | Check Claude Code + Codex availability |
+| `get_ai_agents_status` | Check Claude Code + Copilot CLI + Codex availability |
 | `stream_ai_agent` | Stream the selected CLI agent through the normalized event layer |
 | `register_mcp_tools` | Register MCP in Claude/Cursor config for the active vault |
 | `remove_mcp_tools` | Remove Tolaria's MCP entry from Claude/Cursor config |
@@ -945,7 +946,7 @@ Desktop-only modules gated at the crate level:
 Desktop-only features gated at the function level in `commands/`:
 - Git operations (commit, pull, push, status, history, diff, conflicts)
 - Clone-by-URL via system git (`clone_repo`)
-- CLI AI agent streaming (Claude, Codex)
+- CLI AI agent streaming (Claude, Copilot, Codex)
 - MCP registration and status
 - Menu state updates
 

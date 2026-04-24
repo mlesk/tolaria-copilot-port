@@ -11,6 +11,7 @@ vi.mock('../../utils/url', async () => {
 
 const installedStatuses = {
   claude_code: { status: 'installed' as const, version: '1.0.20' },
+  copilot_cli: { status: 'installed' as const, version: '1.0.31' },
   codex: { status: 'installed' as const, version: '0.37.0' },
 }
 

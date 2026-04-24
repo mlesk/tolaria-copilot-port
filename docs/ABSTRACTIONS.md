@@ -647,11 +647,11 @@ interface Settings {
   analytics_enabled: boolean | null
   anonymous_id: string | null
   release_channel: string | null // null = stable default, "alpha" = every-push prerelease feed
-  default_ai_agent: 'claude_code' | 'codex' | null
+  default_ai_agent: 'claude_code' | 'copilot_cli' | 'codex' | null
 }
 ```
 
-Managed by `useSettings` hook and `SettingsPanel` component. `default_ai_agent` is an installation-local preference that selects which supported CLI agent the AI panel, command palette AI mode, and status bar should target by default. The AutoGit fields are also installation-local: `useAutoGit` consumes them to schedule automatic checkpoints, while `useCommitFlow` and the status bar quick action reuse the same checkpoint runner and deterministic automatic commit message generation.
+Managed by `useSettings` hook and `SettingsPanel` component. `default_ai_agent` is an installation-local preference that selects which supported CLI agent (Claude Code, Copilot CLI, or Codex) the AI panel, command palette AI mode, and status bar should target by default. The AutoGit fields are also installation-local: `useAutoGit` consumes them to schedule automatic checkpoints, while `useCommitFlow` and the status bar quick action reuse the same checkpoint runner and deterministic automatic commit message generation.
 
 ## Telemetry
 

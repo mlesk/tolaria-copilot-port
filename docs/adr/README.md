@@ -132,3 +132,4 @@ proposed → active → superseded
 | [0074](0074-explicit-external-ai-tool-setup-and-least-privilege-desktop-scope.md) | Explicit external AI tool setup and least-privilege desktop scope | active |
 | [0075](0075-crash-safe-note-rename-transactions.md) | Crash-safe note rename transactions | active |
 | [0076](0076-note-retargeting-separates-type-and-folder-moves.md) | Note retargeting separates type changes from folder moves | active |
+| [0077](0077-copilot-cli-via-rust-acp-adapter.md) | Copilot CLI through a Rust ACP adapter | active |

@@ -218,11 +218,28 @@ export function useAiAgent(
 // --- Helpers ---
 
 /** Parse the file_path from a Write or Edit tool input JSON string. */
+const TOOL_INPUT_PATH_KEYS = [
+  'file_path',
+  'filePath',
+  'path',
+  'target_path',
+  'targetPath',
+  'destination_path',
+  'destinationPath',
+  'new_path',
+  'newPath',
+] as const
+
 function parseFilePath(input: string | undefined): string | null {
   if (!input) return null
   try {
     const parsed = JSON.parse(input)
-    return parsed.file_path ?? parsed.path ?? null
+    if (typeof parsed !== 'object' || parsed === null) return null
+    for (const key of TOOL_INPUT_PATH_KEYS) {
+      const candidate = parsed[key]
+      if (typeof candidate === 'string' && candidate.length > 0) return candidate
+    }
+    return null
   } catch {
     return null
   }
